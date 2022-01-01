@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         visibility_flags.h
         chart_elements.h
         enum_map.h
+        kcolorbutton.h
+        kcolorbutton.cpp
         main_window.ui
 )
 

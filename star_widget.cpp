@@ -1,6 +1,7 @@
 #include "star_widget.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <QMouseEvent>
 #include <cmath>
 
 star_widget::star_widget(QWidget* parent)
@@ -13,9 +14,10 @@ star_widget::star_widget(QWidget* parent)
 
 void star_widget::timer_tick()
 {
+    assert(etimer.isValid());
     assert(phi >= 0.);
     qint64 dt = etimer.restart();
-    phi += 0.001 * dt;
+    phi += (0.007 / denom) * dt;
     if (phi >= num * 2 * M_PI)
         phi -= num * 2 * M_PI;
 
@@ -25,125 +27,157 @@ void star_widget::timer_tick()
     update();
 }
 
+void star_widget::mousePressEvent(QMouseEvent* e)
+{
+    if (e->button() == Qt::LeftButton)
+    {
+        e->accept();
+        if (timer.isActive())
+        {
+            etimer.invalidate();
+            timer.stop();
+        }
+        else
+        {
+            etimer.start();
+            timer.start();
+        }
+        update();
+        return;
+    }
+    
+    QWidget::mousePressEvent(e);
+}
+
 void star_widget::paintEvent(QPaintEvent* event)
 {
-    QPainter p(this);
-    p.translate(QPointF(width(), height()) / 2.);
-    double scale = std::min(width(), height());
-    if (sharpness > 1.)
-        scale *= 2 / (1 + sharpness);
-    p.scale(scale, -scale);
     {
-        QPen pen = p.pen();
-        double w = 0.007;
+        QPainter p(this);
+        p.translate(QPointF(width(), height()) / 2.);
+        double scale = std::min(width(), height());
         if (sharpness > 1.)
-            w *= 2 / (1 + sharpness);
-        pen.setWidthF(w);
-        p.setPen(pen);
-    }
-
-    double big_r = 0.48;
-    double small_r = big_r * (double)num / (double)denom;
-
-    p.drawEllipse(origin, big_r, big_r);
-
-    if (num > denom)
-        return;
-
-    if (current_alpha[chart_element_id::stars] != 0.)
-    {
+            scale *= 2 / (1 + sharpness);
+        p.scale(scale, -scale);
         {
             QPen pen = p.pen();
-            pen.setColor(QColor::fromRgbF(0.25, 0.6, 0.225, current_alpha[chart_element_id::stars]));
+            double w = 0.007;
+            if (sharpness > 1.)
+                w *= (1 + sharpness) / 2;
+            pen.setWidthF(w);
             p.setPen(pen);
         }
-
-        QPainterPath path;
-        for (double alpha = 0; alpha < num * 2 * M_PI; alpha += 0.01)
+    
+        double big_r = 0.48;
+        double small_r = big_r * (double)num / (double)denom;
+    
+        p.drawEllipse(origin, big_r, big_r);
+    
+        if (num > denom)
+            return;
+    
+        if (current_alpha[chart_element_id::stars] != 0.)
         {
-            QPointF pnt = poi(big_r, small_r, alpha, sharpness);
-            if (alpha == 0)
-                path.moveTo(pnt);
-            else
-                path.lineTo(pnt);
+            {
+                QPen pen = p.pen();
+                pen.setColor(get_color(chart_element_id::stars));
+                p.setPen(pen);
+            }
+    
+            QPainterPath path;
+            for (double alpha = 0; alpha < num * 2 * M_PI; alpha += 0.01)
+            {
+                QPointF pnt = poi(big_r, small_r, alpha, sharpness);
+                if (alpha == 0)
+                    path.moveTo(pnt);
+                else
+                    path.lineTo(pnt);
+            }
+            p.drawPath(path);
         }
-        p.drawPath(path);
-    }
-
-    size_t co_num = denom - num;
-
-    std::vector<QPointF> points;
-    for (size_t i = 0; i != num * co_num; ++i)
-        points.push_back(poi(big_r, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
-
-    if (current_alpha[chart_element_id::triangles] != 0.)
-    {
+    
+        size_t co_num = denom - num;
+    
+        std::vector<QPointF> points;
+        for (size_t i = 0; i != num * co_num; ++i)
+            points.push_back(poi(big_r, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
+    
+        if (current_alpha[chart_element_id::triangles] != 0.)
+        {
+            {
+                QPen pen = p.pen();
+                pen.setColor(get_color(chart_element_id::triangles));
+                p.setPen(pen);
+            }
+    
+            for (size_t i = 0; i != co_num; ++i)
+            {
+                std::vector<QPointF> poly;
+                for (size_t j = 0; j != num; ++j)
+                    poly.push_back(points[i + co_num * j]);
+                draw_polygon(p, poly);
+            }
+        }
+    
+        if (current_alpha[chart_element_id::squares] != 0.)
+        {
+            {
+                QPen pen = p.pen();
+                pen.setColor(get_color(chart_element_id::squares));
+                p.setPen(pen);
+            }
+    
+            for (size_t i = 0; i != num; ++i)
+            {
+                std::vector<QPointF> poly;
+                for (size_t j = 0; j != co_num; ++j)
+                    poly.push_back(points[i + num * j]);
+                draw_polygon(p, poly);
+            }
+        }
+    
+        if (current_alpha[chart_element_id::circles] != 0.)
         {
             QPen pen = p.pen();
-            pen.setColor(QColor::fromRgbF(0.9, 0.6, 0.1, current_alpha[chart_element_id::triangles]));
-            p.setPen(pen);
-        }
-
-        for (size_t i = 0; i != co_num; ++i)
-        {
-            std::vector<QPointF> poly;
-            for (size_t j = 0; j != num; ++j)
-                poly.push_back(points[i + co_num * j]);
-            draw_polygon(p, poly);
-        }
-    }
-
-    if (current_alpha[chart_element_id::squares] != 0.)
-    {
-        {
-            QPen pen = p.pen();
-            pen.setColor(QColor::fromRgbF(0.9, 0.3, 0.45, current_alpha[chart_element_id::squares]));
-            p.setPen(pen);
-        }
-
-        for (size_t i = 0; i != num; ++i)
-        {
-            std::vector<QPointF> poly;
-            for (size_t j = 0; j != co_num; ++j)
-                poly.push_back(points[i + num * j]);
-            draw_polygon(p, poly);
-        }
-    }
-
-    if (current_alpha[chart_element_id::circles] != 0.)
-    {
-        QPen pen = p.pen();
-        pen.setColor(QColor::fromRgbF(64. / 255., 163. / 255., 199. / 255., current_alpha[chart_element_id::circles]));
-        p.setPen(pen);
-        
-        draw_circle(p, origin + from_polar(phi, big_r - small_r), small_r, inner_angle(big_r, small_r, phi));
-    }
-
-    if (current_alpha[chart_element_id::dots] != 0.)
-    {
-        {
-            QPen pen = p.pen();
-            //pen.setColor(QColor::fromRgbF(0.1, 0.2, 0.9, current_alpha[chart_element_id::dots]));
-            //, 64, 199
-            pen.setColor(QColor::fromRgbF(71. / 255., 64. / 255., 199. / 255., current_alpha[chart_element_id::dots]));
+            pen.setColor(get_color(chart_element_id::circles));
             p.setPen(pen);
             
-            QBrush brush = p.brush();
-            brush.setColor(QColor::fromRgbF(0, 0, 0, current_alpha[chart_element_id::dots]));
-            brush.setStyle(Qt::SolidPattern);
-            p.setBrush(brush);
+            draw_circle(p, origin + from_polar(phi, big_r - small_r), small_r, inner_angle(big_r, small_r, phi));
         }
-
-        for (size_t i = 0; i != points.size(); ++i)
-            p.drawEllipse(points[i], 0.005, 0.005);
+    
+        if (current_alpha[chart_element_id::dots] != 0.)
+        {
+            {
+                QPen pen = p.pen();
+                pen.setStyle(Qt::NoPen);
+                p.setPen(pen);
+                
+                QBrush brush = p.brush();
+                brush.setColor(get_color(chart_element_id::dots));
+                brush.setStyle(Qt::SolidPattern);
+                p.setBrush(brush);
+            }
+    
+            for (size_t i = 0; i != points.size(); ++i)
+                p.drawEllipse(points[i], 0.01, 0.01);
+        }
+    }
+    
+    if (!timer.isActive())
+    {
+        QPainter p(this);
+        p.drawText(this->contentsRect(), Qt::AlignCenter, "Paused. Click to resume.");
     }
 }
 
 void star_widget::draw_circle(QPainter& p, QPointF center, double radius, double alpha)
 {
     p.drawEllipse(center, radius, radius);
-    QPointF tip = center + sharpness * from_polar(alpha, radius);
-    p.drawLine(center, tip);
+    // workaround: sometimes qt draw a horizontal line instead of point
+    if (sharpness > 0.001)
+    {
+        QPointF tip = center + sharpness * from_polar(alpha, radius);
+        p.drawLine(center, tip);
+    }
 }
 
 void star_widget::draw_polygon(QPainter& p, std::vector<QPointF> const& vertices)
@@ -186,4 +220,11 @@ void star_widget::adjust_alpha(double& alpha, bool visible, double dt)
         alpha = 0.;
     else if (alpha > 1.)
         alpha = 1.;
+}
+
+QColor star_widget::get_color(chart_element_id e) const
+{
+    QColor c = colors[e];
+    c.setAlphaF(current_alpha[e]);
+    return c;
 }

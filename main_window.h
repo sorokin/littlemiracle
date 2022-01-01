@@ -23,6 +23,7 @@ public slots:
     void smoothness_changed();
     void visibility_changed();
     void checkbox_changed();
+    void color_changed();
 
 private:
     Ui::main_window *ui;

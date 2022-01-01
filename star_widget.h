@@ -17,6 +17,7 @@ public:
 
     void timer_tick();
 
+    void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
 
     void draw_circle(QPainter& p, QPointF center, double radius, double alpha);
@@ -28,6 +29,7 @@ public:
     QPointF poi(double static_r, double rotating_r, double alpha, double smoothness);
 
     static void adjust_alpha(double& alpha, bool visible, double dt);
+    QColor get_color(chart_element_id e) const;
 
     static constexpr QPointF origin = QPointF();
 
@@ -40,6 +42,7 @@ public:
 
     visibility_flags visibility = {};
     enum_map<double, chart_element_id> current_alpha = {};
+    enum_map<QColor, chart_element_id> colors;
 };
 
 #endif // STAR_WIDGET_H

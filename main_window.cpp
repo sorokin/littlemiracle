@@ -8,6 +8,11 @@ main_window::main_window(QWidget *parent)
     , ui(new Ui::main_window)
 {
     ui->setupUi(this);
+    ui->kcolorbutton_2->setColor(QColor::fromRgbF(0.25, 0.6, 0.225));
+    ui->kcolorbutton_3->setColor(QColor::fromRgbF(0.9, 0.6, 0.1));
+    ui->kcolorbutton_4->setColor(QColor::fromRgbF(0.9, 0.3, 0.45));
+    ui->kcolorbutton->setColor(QColor::fromRgbF(64. / 255., 163. / 255., 199. / 255.));
+    ui->kcolorbutton_5->setColor(QColor::fromRgbF(71. / 255., 64. / 255., 199. / 255.));
     connect(ui->spinBox, &QSpinBox::textChanged, this, &main_window::numerator_changed);
     connect(ui->spinBox_2, &QSpinBox::textChanged, this, &main_window::denominator_changed);
     connect(ui->lineEdit_3, &QLineEdit::textChanged, this, &main_window::smoothness_changed);
@@ -17,9 +22,15 @@ main_window::main_window(QWidget *parent)
     connect(ui->checkBox_3, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
     connect(ui->checkBox_4, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
     connect(ui->checkBox_5, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
+    connect(ui->kcolorbutton, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
+    connect(ui->kcolorbutton_2, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
+    connect(ui->kcolorbutton_3, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
+    connect(ui->kcolorbutton_4, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
+    connect(ui->kcolorbutton_5, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
     denominator_changed();
     smoothness_changed();
     visibility_changed();
+    color_changed();
 }
 
 main_window::~main_window()
@@ -99,4 +110,13 @@ void main_window::checkbox_changed()
     ui->widget->visibility[chart_element_id::circles] = ui->checkBox_3->isChecked();
     ui->widget->visibility[chart_element_id::stars] = ui->checkBox_4->isChecked();
     ui->widget->visibility[chart_element_id::dots] = ui->checkBox_5->isChecked();
+}
+
+void main_window::color_changed()
+{
+    ui->widget->colors[chart_element_id::triangles] = ui->kcolorbutton_2->color();
+    ui->widget->colors[chart_element_id::squares] = ui->kcolorbutton_3->color();
+    ui->widget->colors[chart_element_id::circles] = ui->kcolorbutton_4->color();
+    ui->widget->colors[chart_element_id::stars] = ui->kcolorbutton->color();
+    ui->widget->colors[chart_element_id::dots] = ui->kcolorbutton_5->color();
 }
