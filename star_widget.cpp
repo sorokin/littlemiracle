@@ -108,13 +108,16 @@ void star_widget::paintEvent(QPaintEvent* event)
                 pen.setColor(get_color(chart_element_id::triangles));
                 p.setPen(pen);
             }
-    
-            for (size_t i = 0; i != co_num; ++i)
+
+            if (num != 0)
             {
-                std::vector<QPointF> poly;
-                for (size_t j = 0; j != num; ++j)
-                    poly.push_back(points[i + co_num * j]);
-                draw_polygon(p, poly);
+                for (size_t i = 0; i != co_num; ++i)
+                {
+                    std::vector<QPointF> poly;
+                    for (size_t j = 0; j != num; ++j)
+                        poly.push_back(points[i + co_num * j]);
+                    draw_polygon(p, poly);
+                }
             }
         }
     
@@ -125,13 +128,16 @@ void star_widget::paintEvent(QPaintEvent* event)
                 pen.setColor(get_color(chart_element_id::squares));
                 p.setPen(pen);
             }
-    
-            for (size_t i = 0; i != num; ++i)
+
+            if (co_num != 0)
             {
-                std::vector<QPointF> poly;
-                for (size_t j = 0; j != co_num; ++j)
-                    poly.push_back(points[i + num * j]);
-                draw_polygon(p, poly);
+                for (size_t i = 0; i != num; ++i)
+                {
+                    std::vector<QPointF> poly;
+                    for (size_t j = 0; j != co_num; ++j)
+                        poly.push_back(points[i + num * j]);
+                    draw_polygon(p, poly);
+                }
             }
         }
     

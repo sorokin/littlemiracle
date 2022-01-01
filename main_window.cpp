@@ -49,8 +49,6 @@ void main_window::denominator_changed()
 {
     ui->widget->denom = ui->spinBox_2->value();
     ui->spinBox->setMaximum(ui->widget->denom - 1);
-    if (ui->widget->denom != 1 && ui->spinBox->value() == 0)
-        ui->spinBox->setValue(1);
     if (avc)
         avc->goto_star();
 }
