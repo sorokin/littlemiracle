@@ -23,8 +23,8 @@ public:
     void draw_polygon(QPainter& p, std::vector<QPointF> const& vertices);
 
     QPointF from_polar(double alpha, double radius);
-    double outer_beta(double static_r, double rotating_r, double alpha);
-    double inner_beta(double static_r, double rotating_r, double alpha);
+    double outer_angle(double static_r, double rotating_r, double phi);
+    double inner_angle(double static_r, double rotating_r, double phi);
     QPointF poi(double static_r, double rotating_r, double alpha, double smoothness);
 
     static void adjust_alpha(double& alpha, bool visible, double dt);
@@ -33,7 +33,7 @@ public:
 
     QTimer timer;
     QElapsedTimer etimer;
-    double alpha = 0.;
+    double phi = 0.;
     size_t num = 3;
     size_t denom = 7;
     double sharpness = 0.9;

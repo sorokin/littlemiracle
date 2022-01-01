@@ -13,11 +13,11 @@ star_widget::star_widget(QWidget* parent)
 
 void star_widget::timer_tick()
 {
-    assert(alpha >= 0.);
+    assert(phi >= 0.);
     qint64 dt = etimer.restart();
-    alpha += 0.001 * dt;
-    if (alpha >= num * 2 * M_PI)
-        alpha -= num * 2 * M_PI;
+    phi += 0.001 * dt;
+    if (phi >= num * 2 * M_PI)
+        phi -= num * 2 * M_PI;
 
     for (auto e : all_enumerators<chart_element_id>())
         adjust_alpha(current_alpha[e], visibility[e], dt);
@@ -74,7 +74,7 @@ void star_widget::paintEvent(QPaintEvent* event)
 
     std::vector<QPointF> points;
     for (size_t i = 0; i != num * co_num; ++i)
-        points.push_back(poi(big_r, small_r, alpha + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
+        points.push_back(poi(big_r, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
 
     if (current_alpha[chart_element_id::triangles] != 0.)
     {
@@ -116,7 +116,7 @@ void star_widget::paintEvent(QPaintEvent* event)
         pen.setColor(QColor::fromRgbF(64. / 255., 163. / 255., 199. / 255., current_alpha[chart_element_id::circles]));
         p.setPen(pen);
         
-        draw_circle(p, origin + from_polar(alpha, big_r - small_r), small_r, inner_beta(big_r, small_r, alpha));
+        draw_circle(p, origin + from_polar(phi, big_r - small_r), small_r, inner_angle(big_r, small_r, phi));
     }
 
     if (current_alpha[chart_element_id::dots] != 0.)
@@ -161,19 +161,19 @@ QPointF star_widget::from_polar(double alpha, double radius)
     return QPointF(cos(alpha), sin(alpha)) * radius;
 }
 
-double star_widget::outer_beta(double static_r, double rotating_r, double alpha)
+double star_widget::outer_angle(double static_r, double rotating_r, double phi)
 {
-    return alpha * (1. + static_r / rotating_r);
+    return phi * (1. + static_r / rotating_r);
 }
 
-double star_widget::inner_beta(double static_r, double rotating_r, double alpha)
+double star_widget::inner_angle(double static_r, double rotating_r, double phi)
 {
-    return alpha * (1. - static_r / rotating_r);
+    return phi * (1. - static_r / rotating_r);
 }
 
 QPointF star_widget::poi(double static_r, double rotating_r, double alpha, double smoothness)
 {
-    return origin + from_polar(alpha, static_r - rotating_r) + smoothness * from_polar(inner_beta(static_r, rotating_r, alpha), rotating_r);
+    return origin + from_polar(alpha, static_r - rotating_r) + smoothness * from_polar(inner_angle(static_r, rotating_r, alpha), rotating_r);
 }
 
 void star_widget::adjust_alpha(double& alpha, bool visible, double dt)
