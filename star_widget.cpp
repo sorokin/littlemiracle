@@ -53,6 +53,7 @@ void star_widget::paintEvent(QPaintEvent* event)
 {
     {
         QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing, true);
         p.translate(QPointF(width(), height()) / 2.);
         double scale = std::min(width(), height());
         if (sharpness > 1.)
@@ -84,7 +85,7 @@ void star_widget::paintEvent(QPaintEvent* event)
             }
     
             QPainterPath path;
-            for (double alpha = 0; alpha < num * 2 * M_PI; alpha += 0.01)
+            for (double alpha = 0; alpha < num * 2 * M_PI; alpha += 0.03)
             {
                 QPointF pnt = poi(big_r, small_r, alpha, sharpness);
                 if (alpha == 0)
