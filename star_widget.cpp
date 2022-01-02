@@ -21,8 +21,11 @@ void star_widget::timer_tick()
     if (phi >= num * 2 * M_PI)
         phi -= num * 2 * M_PI;
 
-    for (auto e : all_enumerators<chart_element_id>())
+    for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
+    {
+        auto e = static_cast<chart_element_id>(i);
         adjust_alpha(current_alpha[e], visibility[e], dt);
+    }
 
     update();
 }
