@@ -21,7 +21,7 @@ public:
     void paintEvent(QPaintEvent*) override;
 
     void draw_circle(QPainter& p, QPointF center, double radius, double alpha);
-    void draw_polygon(QPainter& p, std::vector<QPointF> const& vertices);
+    void draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step);
 
     QPointF from_polar(double alpha, double radius);
     double outer_angle(double static_r, double rotating_r, double phi);

@@ -112,15 +112,8 @@ void star_widget::paintEvent(QPaintEvent* event)
             }
 
             if (num != 0)
-            {
                 for (size_t i = 0; i != co_num; ++i)
-                {
-                    std::vector<QPointF> poly;
-                    for (size_t j = 0; j != num; ++j)
-                        poly.push_back(points[i + co_num * j]);
-                    draw_polygon(p, poly);
-                }
-            }
+                    draw_polygon(p, points.data() + i, num, co_num);
         }
     
         if (current_alpha[chart_element_id::squares] != 0.)
@@ -132,15 +125,8 @@ void star_widget::paintEvent(QPaintEvent* event)
             }
 
             if (co_num != 0)
-            {
                 for (size_t i = 0; i != num; ++i)
-                {
-                    std::vector<QPointF> poly;
-                    for (size_t j = 0; j != co_num; ++j)
-                        poly.push_back(points[i + num * j]);
-                    draw_polygon(p, poly);
-                }
-            }
+                    draw_polygon(p, points.data() + i, co_num, num);
         }
     
         if (current_alpha[chart_element_id::circles] != 0.)
@@ -188,12 +174,12 @@ void star_widget::draw_circle(QPainter& p, QPointF center, double radius, double
     }
 }
 
-void star_widget::draw_polygon(QPainter& p, std::vector<QPointF> const& vertices)
+void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step)
 {
     QPainterPath path;
     path.moveTo(vertices[0]);
-    for (size_t i = 1; i != vertices.size(); ++i)
-        path.lineTo(vertices[i]);
+    for (size_t i = 1; i != n; ++i)
+        path.lineTo(vertices[i * step]);
     path.closeSubpath();
     p.drawPath(path);
 }
