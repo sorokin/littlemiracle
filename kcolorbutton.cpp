@@ -25,7 +25,6 @@ public:
     KColorButtonPrivate(KColorButton *qq);
 
     void chooseColor();
-    void colorChosen();
 
     KColorButton *q;
     QColor m_defaultColor;
@@ -287,35 +286,10 @@ void KColorButton::mouseMoveEvent(QMouseEvent *e)
 
 void KColorButtonPrivate::chooseColor()
 {
-    QColorDialog *dialog = dialogPtr.data();
-    if (dialog) {
-        dialog->show();
-        dialog->raise();
-        dialog->activateWindow();
-        return;
-    }
-
-    dialog = new QColorDialog(q);
-    dialog->setCurrentColor(q->color());
-    dialog->setOption(QColorDialog::ShowAlphaChannel, m_alphaChannel);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-    QObject::connect(dialog, &QDialog::accepted, q, [this]() {
-        colorChosen();
-    });
-    dialogPtr = dialog;
-    dialog->show();
-}
-
-void KColorButtonPrivate::colorChosen()
-{
-    QColorDialog *dialog = dialogPtr.data();
-    if (!dialog) {
-        return;
-    }
-
-    if (dialog->selectedColor().isValid()) {
-        q->setColor(dialog->selectedColor());
-    } else if (m_bdefaultColor) {
-        q->setColor(m_defaultColor);
-    }
+    QColorDialog::ColorDialogOptions opts{};
+    if (m_alphaChannel)
+        opts |= QColorDialog::ShowAlphaChannel;
+    QColor result = QColorDialog::getColor(q->color(), q, QString(), opts);
+    if (result.isValid())
+        q->setColor(result);
 }
