@@ -93,6 +93,7 @@ void star_widget::paintEvent(QPaintEvent* event)
                 else
                     path.lineTo(pnt);
             }
+            path.closeSubpath();
             p.drawPath(path);
         }
     
