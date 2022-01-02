@@ -54,7 +54,9 @@ void star_widget::mousePressEvent(QMouseEvent* e)
 
 void star_widget::paintEvent(QPaintEvent* event)
 {
+    QElapsedTimer paint_timer;
     {
+        paint_timer.start();
         QPainter p(this);
         p.setRenderHint(QPainter::Antialiasing, true);
         p.translate(QPointF(width(), height()) / 2.);
@@ -158,11 +160,14 @@ void star_widget::paintEvent(QPaintEvent* event)
                 p.drawEllipse(points[i], 0.01, 0.01);
         }
     }
-    
-    if (!timer.isActive())
+
+    qint64 paint_time = paint_timer.nsecsElapsed();
     {
         QPainter p(this);
-        p.drawText(this->contentsRect(), Qt::AlignCenter, "Paused. Click to resume.");
+        if (!timer.isActive())
+            p.drawText(this->contentsRect(), Qt::AlignCenter, "Paused. Click to resume.");
+        else
+            p.drawText(this->contentsRect(), Qt::AlignBottom | Qt::AlignLeft, QString("Render Time: %1 ms").arg(paint_time / 1'000'000., 0, 'f', 2));
     }
 }
 
