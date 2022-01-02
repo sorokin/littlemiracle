@@ -3,6 +3,33 @@
 #include "./ui_main_window.h"
 #include <cassert>
 
+namespace
+{
+    QString polygon_name(size_t n)
+    {
+        switch (n)
+        {
+        case 0:
+            assert(false);
+            return "<error>";
+        case 1:
+            return "Dots";
+        case 2:
+            return "Lines";
+        case 3:
+            return "Triangles";
+        case 4:
+            return "Squares";
+        case 5:
+            return "Pentagons";
+        case 6:
+            return "Hexagons";
+        default:
+            return QString("%1-gons").arg(n);
+        }
+    }
+}
+
 main_window::main_window(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::main_window)
@@ -45,6 +72,8 @@ void main_window::numerator_changed()
     ui->widget->num = ui->spinBox->value();
     if (avc)
         avc->goto_star();
+    update_labels();
+    update_checkboxes();
 }
 
 void main_window::denominator_changed()
@@ -53,6 +82,8 @@ void main_window::denominator_changed()
     ui->spinBox->setMaximum(ui->widget->denom - 1);
     if (avc)
         avc->goto_star();
+    update_labels();
+    update_checkboxes();
 }
 
 void main_window::smoothness_changed()
@@ -77,22 +108,14 @@ void main_window::visibility_changed()
     switch (ui->comboBox->currentIndex())
     {
     case 0:
-        ui->checkBox->setEnabled(false);
-        ui->checkBox_2->setEnabled(false);
-        ui->checkBox_3->setEnabled(false);
-        ui->checkBox_4->setEnabled(false);
-        ui->checkBox_5->setEnabled(false);
         assert(!avc);
         avc = new auto_visibility_controller(this, ui->widget);
+        update_checkboxes();
         break;
     case 1:
-        ui->checkBox->setEnabled(true);
-        ui->checkBox_2->setEnabled(true);
-        ui->checkBox_3->setEnabled(true);
-        ui->checkBox_4->setEnabled(true);
-        ui->checkBox_5->setEnabled(true);
         delete avc;
         avc = nullptr;
+        update_checkboxes();
         checkbox_changed();
         break;
     default:
@@ -125,4 +148,30 @@ void main_window::antialiasing_changed()
 {
     ui->widget->enable_antialiasing = ui->checkBox_6->isChecked();
     ui->widget->update();
+}
+
+void main_window::update_labels()
+{
+    size_t co_num = ui->widget->denom - ui->widget->num;
+
+    ui->label_7->setText(polygon_name(ui->widget->num));
+    ui->checkBox->setText(polygon_name(ui->widget->num));
+
+    ui->label_8->setText(polygon_name(co_num));
+    ui->checkBox_2->setText(polygon_name(co_num));
+}
+
+void main_window::update_checkboxes()
+{
+    bool custom = !avc;
+    size_t co_num = ui->widget->denom - ui->widget->num;
+
+    ui->checkBox->setEnabled(custom && ui->widget->num != 1);
+    ui->checkBox_2->setEnabled(custom && co_num != 1);
+    ui->checkBox_3->setEnabled(custom);
+    ui->checkBox_4->setEnabled(custom);
+    ui->checkBox_5->setEnabled(custom);
+
+    ui->label_7->setEnabled(ui->widget->num != 1);
+    ui->label_8->setEnabled(co_num != 1);
 }

@@ -27,6 +27,10 @@ public slots:
     void antialiasing_changed();
 
 private:
+    void update_labels();
+    void update_checkboxes();
+
+private:
     Ui::main_window *ui;
     auto_visibility_controller* avc = nullptr;
 };
