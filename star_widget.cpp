@@ -85,7 +85,7 @@ void star_widget::paintEvent(QPaintEvent* event)
             }
     
             QPainterPath path;
-            for (double alpha = 0; alpha < num * 2 * M_PI; alpha += 0.03)
+            for (double alpha = 0; alpha < num * 2 * M_PI; alpha += 0.02)
             {
                 QPointF pnt = poi(big_r, small_r, alpha, sharpness);
                 if (alpha == 0)
