@@ -58,7 +58,8 @@ void star_widget::paintEvent(QPaintEvent* event)
     {
         paint_timer.start();
         QPainter p(this);
-        p.setRenderHint(QPainter::Antialiasing, true);
+        if (enable_antialiasing)
+            p.setRenderHint(QPainter::Antialiasing, true);
         p.translate(QPointF(width(), height()) / 2.);
         double scale = std::min(width(), height());
         if (sharpness > 1.)

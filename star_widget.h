@@ -43,6 +43,8 @@ public:
     visibility_flags visibility = {};
     enum_map<double, chart_element_id> current_alpha = {};
     enum_map<QColor, chart_element_id> colors;
+
+    bool enable_antialiasing = false;
 };
 
 #endif // STAR_WIDGET_H

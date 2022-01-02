@@ -24,6 +24,7 @@ public slots:
     void visibility_changed();
     void checkbox_changed();
     void color_changed();
+    void antialiasing_changed();
 
 private:
     Ui::main_window *ui;

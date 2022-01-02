@@ -27,10 +27,12 @@ main_window::main_window(QWidget *parent)
     connect(ui->kcolorbutton_3, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
     connect(ui->kcolorbutton_4, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
     connect(ui->kcolorbutton_5, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
+    connect(ui->checkBox_6, SIGNAL(clicked(bool)), this, SLOT(antialiasing_changed()));
     denominator_changed();
     smoothness_changed();
     visibility_changed();
     color_changed();
+    antialiasing_changed();
 }
 
 main_window::~main_window()
@@ -117,4 +119,10 @@ void main_window::color_changed()
     ui->widget->colors[chart_element_id::circles] = ui->kcolorbutton_4->color();
     ui->widget->colors[chart_element_id::stars] = ui->kcolorbutton->color();
     ui->widget->colors[chart_element_id::dots] = ui->kcolorbutton_5->color();
+}
+
+void main_window::antialiasing_changed()
+{
+    ui->widget->enable_antialiasing = ui->checkBox_6->isChecked();
+    ui->widget->update();
 }

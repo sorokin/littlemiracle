@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1078</width>
-    <height>724</height>
+    <height>743</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -334,6 +334,20 @@
            <widget class="KColorButton" name="kcolorbutton_5"/>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Advanced</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBox_6">
+         <property name="text">
+          <string>Anti-aliasing</string>
+         </property>
         </widget>
        </item>
        <item>
