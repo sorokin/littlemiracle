@@ -2,7 +2,6 @@
 #define STAR_WIDGET_H
 
 #include <QWidget>
-#include <QTimer>
 #include <QElapsedTimer>
 #include <QPainterPath>
 #include "visibility_flags.h"
@@ -26,8 +25,6 @@ public:
     size_t get_denom() const;
     size_t get_actual_num() const;
     size_t get_actual_denom() const;
-
-    void timer_tick();
 
     void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
@@ -57,7 +54,6 @@ private:
     size_t actual_num = 3;
     size_t actual_denom = 7;
 
-    QTimer timer;
     QElapsedTimer etimer;
     double phi = 0.;
     double sharpness = 0.9;

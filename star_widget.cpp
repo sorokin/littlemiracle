@@ -8,8 +8,6 @@
 star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
 {
-    connect(&timer, &QTimer::timeout, this, &star_widget::timer_tick);
-    timer.start(0);
     etimer.start();
     validate_star_path();
 }
@@ -62,26 +60,15 @@ size_t star_widget::get_actual_denom() const
     return actual_denom;
 }
 
-void star_widget::timer_tick()
-{
-    update();
-}
-
 void star_widget::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton)
     {
         e->accept();
-        if (timer.isActive())
-        {
+        if (etimer.isValid())
             etimer.invalidate();
-            timer.stop();
-        }
         else
-        {
             etimer.start();
-            timer.start();
-        }
         update();
         return;
     }
@@ -191,11 +178,14 @@ void star_widget::paintEvent(QPaintEvent* event)
     qint64 paint_time = paint_timer.nsecsElapsed();
     {
         QPainter p(this);
-        if (!timer.isActive())
+        if (!etimer.isValid())
             p.drawText(this->contentsRect(), Qt::AlignCenter, "Paused. Click to resume.");
         else
             p.drawText(this->contentsRect(), Qt::AlignBottom | Qt::AlignLeft, QString("Render Time: %1 ms").arg(paint_time / 1'000'000., 0, 'f', 2));
     }
+
+    if (etimer.isValid())
+        update();
 }
 
 void star_widget::draw_circle(QPainter& p, QPointF center, double radius, double alpha)
