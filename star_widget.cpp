@@ -9,7 +9,7 @@ star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
 {
     connect(&timer, &QTimer::timeout, this, &star_widget::timer_tick);
-    timer.start(1);
+    timer.start(0);
     etimer.start();
     validate_star_path();
 }
