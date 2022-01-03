@@ -14,22 +14,25 @@ star_widget::star_widget(QWidget* parent)
     validate_star_path();
 }
 
-void star_widget::set_num(size_t num)
+void star_widget::set_desired_num(size_t num)
 {
-    this->num = num;
+    this->desired_num = num;
+    update_actual_num_denom();
     validate_star_path();
 }
 
-void star_widget::set_denom(size_t denom)
+void star_widget::set_desired_denom(size_t denom)
 {
-    this->denom = denom;
+    this->desired_denom = denom;
+    update_actual_num_denom();
     validate_star_path();
 }
 
-void star_widget::set_num_denom(size_t num, size_t denom)
+void star_widget::set_desired_num_denom(size_t num, size_t denom)
 {
-    this->num = num;
-    this->denom = denom;
+    this->desired_num = num;
+    this->desired_denom = denom;
+    update_actual_num_denom();
     validate_star_path();
 }
 
@@ -41,12 +44,22 @@ void star_widget::set_sharpness(double sharpness)
 
 size_t star_widget::get_num() const
 {
-    return num;
+    return desired_num;
 }
 
 size_t star_widget::get_denom() const
 {
-    return denom;
+    return desired_denom;
+}
+
+size_t star_widget::get_actual_num() const
+{
+    return actual_num;
+}
+
+size_t star_widget::get_actual_denom() const
+{
+    return actual_denom;
 }
 
 void star_widget::timer_tick()
@@ -101,7 +114,7 @@ void star_widget::paintEvent(QPaintEvent* event)
 
         p.drawEllipse(origin, big_r, big_r);
     
-        if (num > denom)
+        if (actual_num > actual_denom)
             return;
     
         if (current_alpha[chart_element_id::stars] != 0.)
@@ -115,11 +128,11 @@ void star_widget::paintEvent(QPaintEvent* event)
             p.drawPath(star_path);
         }
     
-        size_t co_num = denom - num;
+        size_t co_num = actual_denom - actual_num;
         double small_r = this->small_r();
     
         std::vector<QPointF> points;
-        for (size_t i = 0; i != num * co_num; ++i)
+        for (size_t i = 0; i != actual_num * co_num; ++i)
             points.push_back(poi(big_r, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
     
         if (current_alpha[chart_element_id::triangles] != 0.)
@@ -130,9 +143,9 @@ void star_widget::paintEvent(QPaintEvent* event)
                 p.setPen(pen);
             }
 
-            if (num != 0)
+            if (actual_num != 0)
                 for (size_t i = 0; i != co_num; ++i)
-                    draw_polygon(p, points.data() + i, num, co_num);
+                    draw_polygon(p, points.data() + i, actual_num, co_num);
         }
     
         if (current_alpha[chart_element_id::squares] != 0.)
@@ -144,8 +157,8 @@ void star_widget::paintEvent(QPaintEvent* event)
             }
 
             if (co_num != 0)
-                for (size_t i = 0; i != num; ++i)
-                    draw_polygon(p, points.data() + i, co_num, num);
+                for (size_t i = 0; i != actual_num; ++i)
+                    draw_polygon(p, points.data() + i, co_num, actual_num);
         }
     
         if (current_alpha[chart_element_id::circles] != 0.)
@@ -245,6 +258,13 @@ QColor star_widget::get_color(chart_element_id e) const
     return c;
 }
 
+void star_widget::update_actual_num_denom()
+{
+    size_t d = std::gcd(desired_num, desired_denom);
+    actual_num = desired_num / d;
+    actual_denom = desired_denom / d;
+}
+
 void star_widget::validate_star_path()
 {
     double small_r = this->small_r();
@@ -254,7 +274,7 @@ void star_widget::validate_star_path()
     v.reserve(initial_subdivisions + 1);
     for (size_t i = 0; i <= initial_subdivisions; ++i)
     {
-        double phi = (i * (double)num * 2. * M_PI) / ((double)denom * initial_subdivisions);
+        double phi = (i * (double)actual_num * 2. * M_PI) / ((double)actual_denom * initial_subdivisions);
         v.push_back(poi(big_r, small_r, phi, sharpness));
     }
 
@@ -262,9 +282,9 @@ void star_widget::validate_star_path()
 
     star_path.clear();
     star_path.moveTo(v[0]);
-    for (size_t j = 0; j != denom; ++j)
+    for (size_t j = 0; j != actual_denom; ++j)
     {
-        double phi = (j * (double)num * 2 * M_PI) / (denom);
+        double phi = (j * (double)actual_num * 2 * M_PI) / (actual_denom);
         QPointF row1 = QPointF(cos(phi), -sin(phi));
         QPointF row2 = QPointF(sin(phi), cos(phi));
 
@@ -280,7 +300,7 @@ void star_widget::validate_star_path()
 
 double star_widget::small_r() const
 {
-    return big_r * (double)num / (double)denom;
+    return big_r * (double)actual_num / (double)actual_denom;
 }
 
 void star_widget::update_animation()
@@ -289,9 +309,9 @@ void star_widget::update_animation()
     if (etimer.isValid())
     {
         qint64 dt = etimer.restart();
-        phi += (0.007 / denom) * dt;
-        if (phi >= num * 2 * M_PI)
-            phi -= num * 2 * M_PI;
+        phi += (0.007 / actual_denom) * dt;
+        if (phi >= actual_num * 2 * M_PI)
+            phi -= actual_num * 2 * M_PI;
         
         for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
         {

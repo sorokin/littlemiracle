@@ -17,13 +17,15 @@ private:
 public:
     star_widget(QWidget* parent);
 
-    void set_num(size_t num);
-    void set_denom(size_t denom);
-    void set_num_denom(size_t num, size_t denom);
+    void set_desired_num(size_t num);
+    void set_desired_denom(size_t denom);
+    void set_desired_num_denom(size_t num, size_t denom);
     void set_sharpness(double sharpness);
 
     size_t get_num() const;
     size_t get_denom() const;
+    size_t get_actual_num() const;
+    size_t get_actual_denom() const;
 
     void timer_tick();
 
@@ -44,16 +46,20 @@ public:
     static constexpr QPointF origin = QPointF();
 
 private:
+    void update_actual_num_denom();
     void validate_star_path();
     double small_r() const;
     void update_animation();
 
 private:
+    size_t desired_num = 3;
+    size_t desired_denom = 7;
+    size_t actual_num = 3;
+    size_t actual_denom = 7;
+
     QTimer timer;
     QElapsedTimer etimer;
     double phi = 0.;
-    size_t num = 3;
-    size_t denom = 7;
     double sharpness = 0.9;
 
     QPainterPath star_path;

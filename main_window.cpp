@@ -69,7 +69,7 @@ main_window::~main_window()
 
 void main_window::numerator_changed()
 {
-    ui->widget->set_num(ui->spinBox->value());
+    ui->widget->set_desired_num(ui->spinBox->value());
     if (avc)
         avc->goto_star();
     update_labels();
@@ -79,7 +79,7 @@ void main_window::numerator_changed()
 void main_window::denominator_changed()
 {
     size_t denom = ui->spinBox_2->value();
-    ui->widget->set_denom(denom);
+    ui->widget->set_desired_denom(denom);
     ui->spinBox->setMaximum(denom);
     if (avc)
         avc->goto_star();
@@ -153,10 +153,10 @@ void main_window::antialiasing_changed()
 
 void main_window::update_labels()
 {
-    size_t co_num = ui->widget->get_denom() - ui->widget->get_num();
+    size_t co_num = ui->widget->get_actual_denom() - ui->widget->get_actual_num();
 
-    ui->label_7->setText(polygon_name(ui->widget->get_num()));
-    ui->checkBox->setText(polygon_name(ui->widget->get_num()));
+    ui->label_7->setText(polygon_name(ui->widget->get_actual_num()));
+    ui->checkBox->setText(polygon_name(ui->widget->get_actual_num()));
 
     ui->label_8->setText(polygon_name(co_num));
     ui->checkBox_2->setText(polygon_name(co_num));
@@ -165,14 +165,14 @@ void main_window::update_labels()
 void main_window::update_checkboxes()
 {
     bool custom = !avc;
-    size_t co_num = ui->widget->get_denom() - ui->widget->get_num();
+    size_t co_num = ui->widget->get_actual_denom() - ui->widget->get_actual_num();
 
-    ui->checkBox->setEnabled(custom && ui->widget->get_num() != 1);
+    ui->checkBox->setEnabled(custom && ui->widget->get_actual_num() != 1);
     ui->checkBox_2->setEnabled(custom && co_num != 1);
     ui->checkBox_3->setEnabled(custom);
     ui->checkBox_4->setEnabled(custom);
     ui->checkBox_5->setEnabled(custom);
 
-    ui->label_7->setEnabled(ui->widget->get_num() != 1);
+    ui->label_7->setEnabled(ui->widget->get_actual_num() != 1);
     ui->label_8->setEnabled(co_num != 1);
 }
