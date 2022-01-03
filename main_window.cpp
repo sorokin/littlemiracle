@@ -80,7 +80,7 @@ void main_window::denominator_changed()
 {
     size_t denom = ui->spinBox_2->value();
     ui->widget->set_desired_denom(denom);
-    ui->spinBox->setMaximum(denom);
+    ui->spinBox->setMaximum(denom - 1);
     if (avc)
         avc->goto_star();
     update_labels();
