@@ -11,6 +11,42 @@ star_widget::star_widget(QWidget* parent)
     connect(&timer, &QTimer::timeout, this, &star_widget::timer_tick);
     timer.start(1);
     etimer.start();
+    validate_star_path();
+}
+
+void star_widget::set_num(size_t num)
+{
+    this->num = num;
+    validate_star_path();
+}
+
+void star_widget::set_denom(size_t denom)
+{
+    this->denom = denom;
+    validate_star_path();
+}
+
+void star_widget::set_num_denom(size_t num, size_t denom)
+{
+    this->num = num;
+    this->denom = denom;
+    validate_star_path();
+}
+
+void star_widget::set_sharpness(double sharpness)
+{
+    this->sharpness = sharpness;
+    validate_star_path();
+}
+
+size_t star_widget::get_num() const
+{
+    return num;
+}
+
+size_t star_widget::get_denom() const
+{
+    return denom;
 }
 
 void star_widget::timer_tick()
@@ -74,10 +110,7 @@ void star_widget::paintEvent(QPaintEvent* event)
             pen.setWidthF(w);
             p.setPen(pen);
         }
-    
-        double big_r = 0.48;
-        double small_r = big_r * (double)num / (double)denom;
-    
+
         p.drawEllipse(origin, big_r, big_r);
     
         if (num > denom)
@@ -91,37 +124,11 @@ void star_widget::paintEvent(QPaintEvent* event)
                 p.setPen(pen);
             }
 
-            std::vector<QPointF> v;
-            for (size_t i = 0; i <= 20; ++i)
-            {
-                double phi = (i * (double)num * 2. * M_PI) / (denom * 20.);
-                v.push_back(poi(big_r, small_r, phi, sharpness));
-            }
-
-            v = simplify_polyline(v, 0.001);
-            //for (size_t i = 0; i != v.size(); ++i)
-                //p.drawEllipse(v[i], 0.007, 0.007);
-
-            QPainterPath path;
-            path.moveTo(v[0]);
-            for (size_t j = 0; j != denom; ++j)
-            {
-                double phi = (j * (double)num * 2 * M_PI) / (denom);
-                QPointF row1 = QPointF(cos(phi), -sin(phi));
-                QPointF row2 = QPointF(sin(phi), cos(phi));
-
-                for (size_t i = 1; i != v.size(); ++i)
-                {
-                    QPointF q = QPointF(QPointF::dotProduct(row1, v[i]),
-                                        QPointF::dotProduct(row2, v[i]));
-                    path.lineTo(q);
-                }
-            }
-            path.closeSubpath();
-            p.drawPath(path);
+            p.drawPath(star_path);
         }
     
         size_t co_num = denom - num;
+        double small_r = this->small_r();
     
         std::vector<QPointF> points;
         for (size_t i = 0; i != num * co_num; ++i)
@@ -248,4 +255,42 @@ QColor star_widget::get_color(chart_element_id e) const
     QColor c = colors[e];
     c.setAlphaF(current_alpha[e]);
     return c;
+}
+
+void star_widget::validate_star_path()
+{
+    double small_r = this->small_r();
+
+    constexpr size_t initial_subdivisions = 20;
+    std::vector<QPointF> v;
+    v.reserve(initial_subdivisions + 1);
+    for (size_t i = 0; i <= initial_subdivisions; ++i)
+    {
+        double phi = (i * (double)num * 2. * M_PI) / ((double)denom * initial_subdivisions);
+        v.push_back(poi(big_r, small_r, phi, sharpness));
+    }
+
+    v = simplify_polyline(v, 0.001);
+
+    star_path.clear();
+    star_path.moveTo(v[0]);
+    for (size_t j = 0; j != denom; ++j)
+    {
+        double phi = (j * (double)num * 2 * M_PI) / (denom);
+        QPointF row1 = QPointF(cos(phi), -sin(phi));
+        QPointF row2 = QPointF(sin(phi), cos(phi));
+
+        for (size_t i = 1; i != v.size(); ++i)
+        {
+            QPointF q = QPointF(QPointF::dotProduct(row1, v[i]),
+                                QPointF::dotProduct(row2, v[i]));
+            star_path.lineTo(q);
+        }
+    }
+    star_path.closeSubpath();
+}
+
+double star_widget::small_r() const
+{
+    return big_r * (double)num / (double)denom;
 }
