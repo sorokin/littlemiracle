@@ -3,6 +3,7 @@
 #include <QPainterPath>
 #include <QMouseEvent>
 #include <cmath>
+#include "douglas_peucker.h"
 
 star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
@@ -89,15 +90,32 @@ void star_widget::paintEvent(QPaintEvent* event)
                 pen.setColor(get_color(chart_element_id::stars));
                 p.setPen(pen);
             }
-    
-            QPainterPath path;
-            for (double alpha = 0; alpha < num * 2 * M_PI; alpha += 0.02)
+
+            std::vector<QPointF> v;
+            for (size_t i = 0; i <= 20; ++i)
             {
-                QPointF pnt = poi(big_r, small_r, alpha, sharpness);
-                if (alpha == 0)
-                    path.moveTo(pnt);
-                else
-                    path.lineTo(pnt);
+                double phi = (i * (double)num * 2. * M_PI) / (denom * 20.);
+                v.push_back(poi(big_r, small_r, phi, sharpness));
+            }
+
+            v = simplify_polyline(v, 0.001);
+            //for (size_t i = 0; i != v.size(); ++i)
+                //p.drawEllipse(v[i], 0.007, 0.007);
+
+            QPainterPath path;
+            path.moveTo(v[0]);
+            for (size_t j = 0; j != denom; ++j)
+            {
+                double phi = (j * (double)num * 2 * M_PI) / (denom);
+                QPointF row1 = QPointF(cos(phi), -sin(phi));
+                QPointF row2 = QPointF(sin(phi), cos(phi));
+
+                for (size_t i = 1; i != v.size(); ++i)
+                {
+                    QPointF q = QPointF(QPointF::dotProduct(row1, v[i]),
+                                        QPointF::dotProduct(row2, v[i]));
+                    path.lineTo(q);
+                }
             }
             path.closeSubpath();
             p.drawPath(path);

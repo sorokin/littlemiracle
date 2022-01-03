@@ -27,6 +27,8 @@ set(PROJECT_SOURCES
         enum_map.h
         kcolorbutton.h
         kcolorbutton.cpp
+        douglas_peucker.h
+        douglas_peucker.cpp
         main_window.ui
 )
 
