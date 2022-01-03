@@ -92,7 +92,7 @@ void star_widget::paintEvent(QPaintEvent* event)
         p.scale(scale, -scale);
         {
             QPen pen = p.pen();
-            double w = 0.004;
+            double w = 0.003;
             if (sharpness > 1.)
                 w *= (1 + sharpness) / 2;
             pen.setWidthF(w);
