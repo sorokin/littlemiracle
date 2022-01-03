@@ -51,19 +51,6 @@ size_t star_widget::get_denom() const
 
 void star_widget::timer_tick()
 {
-    assert(etimer.isValid());
-    assert(phi >= 0.);
-    qint64 dt = etimer.restart();
-    phi += (0.007 / denom) * dt;
-    if (phi >= num * 2 * M_PI)
-        phi -= num * 2 * M_PI;
-
-    for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
-    {
-        auto e = static_cast<chart_element_id>(i);
-        adjust_alpha(current_alpha[e], visibility[e], dt);
-    }
-
     update();
 }
 
@@ -91,6 +78,7 @@ void star_widget::mousePressEvent(QMouseEvent* e)
 
 void star_widget::paintEvent(QPaintEvent* event)
 {
+    update_animation();
     QElapsedTimer paint_timer;
     {
         paint_timer.start();
@@ -293,4 +281,22 @@ void star_widget::validate_star_path()
 double star_widget::small_r() const
 {
     return big_r * (double)num / (double)denom;
+}
+
+void star_widget::update_animation()
+{
+    assert(phi >= 0.);
+    if (etimer.isValid())
+    {
+        qint64 dt = etimer.restart();
+        phi += (0.007 / denom) * dt;
+        if (phi >= num * 2 * M_PI)
+            phi -= num * 2 * M_PI;
+        
+        for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
+        {
+            auto e = static_cast<chart_element_id>(i);
+            adjust_alpha(current_alpha[e], visibility[e], dt);
+        }
+    }
 }

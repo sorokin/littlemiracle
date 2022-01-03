@@ -46,6 +46,7 @@ public:
 private:
     void validate_star_path();
     double small_r() const;
+    void update_animation();
 
 private:
     QTimer timer;
