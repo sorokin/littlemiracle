@@ -299,7 +299,7 @@ void star_widget::update_animation()
     if (etimer.isValid())
     {
         qint64 dt = etimer.restart();
-        phi += (0.006 / actual_denom) * dt;
+        phi += (0.005 / actual_denom) * dt;
         if (phi >= actual_num * 2 * M_PI)
             phi -= actual_num * 2 * M_PI;
         
