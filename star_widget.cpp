@@ -80,7 +80,10 @@ void star_widget::paintEvent(QPaintEvent* event)
 {
     qint64 dt = 0;
     if (etimer.isValid())
-        dt = etimer.restart();
+    {
+        dt = etimer.nsecsElapsed();
+        etimer.start();
+    }
 
     QElapsedTimer paint_timer;
     {
@@ -241,7 +244,7 @@ void star_widget::adjust_alpha(double& alpha, bool visible, double dt)
     if (!visible)
         dt = -dt;
 
-    alpha += dt * 0.003;
+    alpha += dt * 3e-9;
     if (alpha < 0.)
         alpha = 0.;
     else if (alpha > 1.)
@@ -303,7 +306,7 @@ double star_widget::small_r() const
 void star_widget::update_phi(qint64 dt)
 {
     assert(phi >= 0.);
-    phi += (0.005 / actual_denom) * dt;
+    phi += (5e-9 / actual_denom) * dt;
     if (phi >= actual_num * 2 * M_PI)
         phi -= actual_num * 2 * M_PI;
 }
