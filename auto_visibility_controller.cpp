@@ -12,14 +12,14 @@ namespace
 
     state states[] =
     {
-        {{false, false, false, false, true}, 3000},
-        {{false, true, false, false, true}, 3000},
-        {{false, false, false, false, true}, 3000},
-        {{false, false, true, false, true}, 3000},
-        {{false, false, false, false, true}, 3000},
-        {{true, false, false, false, true}, 3000},
-        {{true, false, false, true, true}, 3000},
-        {{true, false, false, false, true}, 3000},
+        {{false, false, false, false, true}, 4000},
+        {{false, true, false, false, true},  4000},
+        {{false, false, false, false, true}, 4000},
+        {{false, false, true, false, true},  4000},
+        {{false, false, false, false, true}, 4000},
+        {{true, false, false, false, true},  4000},
+        {{true, false, false, true, true},   5000},
+        {{true, false, false, false, true},  3000},
     };
 }
 
