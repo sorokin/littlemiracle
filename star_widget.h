@@ -26,6 +26,8 @@ public:
     size_t get_actual_num() const;
     size_t get_actual_denom() const;
 
+    void set_visibility(visibility_flags visibility);
+
     void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
 
@@ -38,6 +40,7 @@ public:
     QPointF poi(double static_r, double rotating_r, double alpha, double smoothness);
 
     static void adjust_alpha(double& alpha, bool visible, double dt);
+    bool need_alpha_animation() const;
     QColor get_color(chart_element_id e) const;
 
     static constexpr QPointF origin = QPointF();
@@ -46,8 +49,8 @@ private:
     void update_actual_num_denom();
     void validate_star_path();
     double small_r() const;
-    void update_phi(qint64 dt);
-    void update_alpha(qint64 dt);
+    void update_phi();
+    void update_alpha();
 
 private:
     size_t desired_num = 3;
@@ -55,15 +58,18 @@ private:
     size_t actual_num = 3;
     size_t actual_denom = 7;
 
-    QElapsedTimer etimer;
+    QElapsedTimer phi_timer;
+    QElapsedTimer alpha_timer;
+
     double phi = 0.;
     double sharpness = 0.9;
 
     QPainterPath star_path;
 
-public:
     visibility_flags visibility = {};
     enum_map<double, chart_element_id> current_alpha = {};
+
+public:
     enum_map<QColor, chart_element_id> colors;
 
     bool enable_antialiasing = false;

@@ -129,11 +129,16 @@ void main_window::checkbox_changed()
 {
     assert(ui->comboBox->currentIndex() == 1);
 
-    ui->widget->visibility[chart_element_id::triangles] = ui->checkBox->isChecked();
-    ui->widget->visibility[chart_element_id::squares] = ui->checkBox_2->isChecked();
-    ui->widget->visibility[chart_element_id::circles] = ui->checkBox_3->isChecked();
-    ui->widget->visibility[chart_element_id::stars] = ui->checkBox_4->isChecked();
-    ui->widget->visibility[chart_element_id::dots] = ui->checkBox_5->isChecked();
+    visibility_flags visibility =
+    {{
+        ui->checkBox_4->isChecked(),
+        ui->checkBox->isChecked(),
+        ui->checkBox_2->isChecked(),
+        ui->checkBox_3->isChecked(),
+        ui->checkBox_5->isChecked()
+    }};
+
+    ui->widget->set_visibility(visibility);
 }
 
 void main_window::color_changed()

@@ -41,7 +41,7 @@ void auto_visibility_controller::goto_star()
 void auto_visibility_controller::sync_state()
 {
     assert(current_state < std::size(states));
-    controllable->visibility = states[current_state].visibility;
+    controllable->set_visibility(states[current_state].visibility);
     timer.start(states[current_state].duration_ms);
 }
 

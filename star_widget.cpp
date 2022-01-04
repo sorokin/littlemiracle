@@ -8,7 +8,8 @@
 star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
 {
-    etimer.start();
+    phi_timer.start();
+    alpha_timer.start();
     validate_star_path();
 }
 
@@ -60,15 +61,25 @@ size_t star_widget::get_actual_denom() const
     return actual_denom;
 }
 
+void star_widget::set_visibility(visibility_flags visibility)
+{
+    this->visibility = visibility;
+    if (need_alpha_animation())
+        alpha_timer.start();
+    else
+        alpha_timer.invalidate();
+    update();
+}
+
 void star_widget::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton)
     {
         e->accept();
-        if (etimer.isValid())
-            etimer.invalidate();
+        if (phi_timer.isValid())
+            phi_timer.invalidate();
         else
-            etimer.start();
+            phi_timer.start();
         update();
         return;
     }
@@ -78,13 +89,6 @@ void star_widget::mousePressEvent(QMouseEvent* e)
 
 void star_widget::paintEvent(QPaintEvent* event)
 {
-    qint64 dt = 0;
-    if (etimer.isValid())
-    {
-        dt = etimer.nsecsElapsed();
-        etimer.start();
-    }
-
     QElapsedTimer paint_timer;
     {
         paint_timer.start();
@@ -110,7 +114,7 @@ void star_widget::paintEvent(QPaintEvent* event)
         if (actual_num > actual_denom)
             return;
 
-        update_alpha(dt);
+        update_alpha();
 
         if (current_alpha[chart_element_id::stars] != 0.)
         {
@@ -123,7 +127,7 @@ void star_widget::paintEvent(QPaintEvent* event)
             p.drawPath(star_path);
         }
 
-        update_phi(dt);
+        update_phi();
 
         size_t co_num = actual_denom - actual_num;
         double small_r = this->small_r();
@@ -188,13 +192,13 @@ void star_widget::paintEvent(QPaintEvent* event)
     qint64 paint_time = paint_timer.nsecsElapsed();
     {
         QPainter p(this);
-        if (!etimer.isValid())
+        if (!phi_timer.isValid())
             p.drawText(this->contentsRect(), Qt::AlignCenter, "Paused. Click to resume.");
         else
             p.drawText(this->contentsRect(), Qt::AlignBottom | Qt::AlignLeft, QString("Render Time: %1 ms").arg(paint_time / 1'000'000., 0, 'f', 2));
     }
 
-    if (etimer.isValid())
+    if (phi_timer.isValid() || alpha_timer.isValid())
         update();
 }
 
@@ -251,6 +255,26 @@ void star_widget::adjust_alpha(double& alpha, bool visible, double dt)
         alpha = 1.;
 }
 
+bool star_widget::need_alpha_animation() const
+{
+    for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
+    {
+        auto e = static_cast<chart_element_id>(i);
+        if (visibility[e])
+        {
+            if (current_alpha[e] != 1.)
+                return true;
+        }
+        else
+        {
+            if (current_alpha[e] != 0.)
+                return true;
+        }
+    }
+
+    return false;
+}
+
 QColor star_widget::get_color(chart_element_id e) const
 {
     QColor c = colors[e];
@@ -303,19 +327,34 @@ double star_widget::small_r() const
     return big_r * (double)actual_num / (double)actual_denom;
 }
 
-void star_widget::update_phi(qint64 dt)
+void star_widget::update_phi()
 {
+    if (!phi_timer.isValid())
+        return;
+
+    qint64 dt = phi_timer.nsecsElapsed();
+    phi_timer.start();
+
     assert(phi >= 0.);
     phi += (5e-9 / actual_denom) * dt;
     if (phi >= actual_num * 2 * M_PI)
         phi -= actual_num * 2 * M_PI;
 }
 
-void star_widget::update_alpha(qint64 dt)
+void star_widget::update_alpha()
 {
+    if (!alpha_timer.isValid())
+        return;
+
+    qint64 dt = alpha_timer.nsecsElapsed();
+    alpha_timer.start();
+
     for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
     {
         auto e = static_cast<chart_element_id>(i);
         adjust_alpha(current_alpha[e], visibility[e], dt);
     }
+
+    if (!need_alpha_animation())
+        alpha_timer.invalidate();
 }
