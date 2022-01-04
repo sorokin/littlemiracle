@@ -46,7 +46,8 @@ private:
     void update_actual_num_denom();
     void validate_star_path();
     double small_r() const;
-    void update_animation();
+    void update_phi(qint64 dt);
+    void update_alpha(qint64 dt);
 
 private:
     size_t desired_num = 3;

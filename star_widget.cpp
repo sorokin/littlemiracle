@@ -78,7 +78,10 @@ void star_widget::mousePressEvent(QMouseEvent* e)
 
 void star_widget::paintEvent(QPaintEvent* event)
 {
-    update_animation();
+    qint64 dt = 0;
+    if (etimer.isValid())
+        dt = etimer.restart();
+
     QElapsedTimer paint_timer;
     {
         paint_timer.start();
@@ -103,7 +106,9 @@ void star_widget::paintEvent(QPaintEvent* event)
     
         if (actual_num > actual_denom)
             return;
-    
+
+        update_alpha(dt);
+
         if (current_alpha[chart_element_id::stars] != 0.)
         {
             {
@@ -114,10 +119,12 @@ void star_widget::paintEvent(QPaintEvent* event)
 
             p.drawPath(star_path);
         }
-    
+
+        update_phi(dt);
+
         size_t co_num = actual_denom - actual_num;
         double small_r = this->small_r();
-    
+
         std::vector<QPointF> points;
         for (size_t i = 0; i != actual_num * co_num; ++i)
             points.push_back(poi(big_r, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
@@ -293,20 +300,19 @@ double star_widget::small_r() const
     return big_r * (double)actual_num / (double)actual_denom;
 }
 
-void star_widget::update_animation()
+void star_widget::update_phi(qint64 dt)
 {
     assert(phi >= 0.);
-    if (etimer.isValid())
+    phi += (0.005 / actual_denom) * dt;
+    if (phi >= actual_num * 2 * M_PI)
+        phi -= actual_num * 2 * M_PI;
+}
+
+void star_widget::update_alpha(qint64 dt)
+{
+    for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
     {
-        qint64 dt = etimer.restart();
-        phi += (0.005 / actual_denom) * dt;
-        if (phi >= actual_num * 2 * M_PI)
-            phi -= actual_num * 2 * M_PI;
-        
-        for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
-        {
-            auto e = static_cast<chart_element_id>(i);
-            adjust_alpha(current_alpha[e], visibility[e], dt);
-        }
+        auto e = static_cast<chart_element_id>(i);
+        adjust_alpha(current_alpha[e], visibility[e], dt);
     }
 }
