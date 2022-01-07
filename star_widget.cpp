@@ -137,7 +137,7 @@ void star_widget::keyPressEvent(QKeyEvent* e)
     if (e->key() == Qt::Key_Space)
     {
         e->accept();
-        toggle_state();
+        toggle_paused_state();
         return;
     }
 
@@ -149,7 +149,7 @@ void star_widget::mousePressEvent(QMouseEvent* e)
     if (e->button() == Qt::LeftButton)
     {
         e->accept();
-        toggle_state();
+        toggle_paused_state();
         return;
     }
 
@@ -339,7 +339,7 @@ QColor star_widget::get_color(chart_element_id e) const
     return c;
 }
 
-void star_widget::toggle_state()
+void star_widget::toggle_paused_state()
 {
     if (phi_timer.isValid())
         phi_timer.invalidate();
@@ -347,7 +347,7 @@ void star_widget::toggle_state()
         phi_timer.start();
     update();
 
-    emit state_changed();
+    emit paused_state_changed();
 }
 
 void star_widget::update_actual_num_denom()

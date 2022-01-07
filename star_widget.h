@@ -36,7 +36,7 @@ public:
     bool is_running() const;
 
 signals:
-    void state_changed();
+    void paused_state_changed();
 
 private:
     void keyPressEvent(QKeyEvent*) override;
@@ -55,7 +55,7 @@ private:
     bool need_alpha_animation() const;
     QColor get_color(chart_element_id e) const;
 
-    void toggle_state();
+    void toggle_paused_state();
 
     void update_actual_num_denom();
     void validate_star_path();

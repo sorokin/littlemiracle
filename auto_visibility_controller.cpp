@@ -34,7 +34,7 @@ auto_visibility_controller::auto_visibility_controller(QWidget* parent, star_wid
     , current_state(0)
 {
     connect(&timer, &QTimer::timeout, this, &auto_visibility_controller::timer_elapsed);
-    connect(controllable, &star_widget::state_changed, this, &auto_visibility_controller::state_changed);
+    connect(controllable, &star_widget::paused_state_changed, this, &auto_visibility_controller::state_changed);
     sync_state();
 }
 
