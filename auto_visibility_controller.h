@@ -20,7 +20,7 @@ public:
     void goto_star();
 
 private:
-    void state_changed();
+    void paused_state_changed();
 
     void sync_state();
     void timer_elapsed();

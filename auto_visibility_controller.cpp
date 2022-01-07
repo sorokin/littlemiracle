@@ -34,7 +34,7 @@ auto_visibility_controller::auto_visibility_controller(QObject* parent, star_wid
     , current_state(0)
 {
     connect(&timer, &QTimer::timeout, this, &auto_visibility_controller::timer_elapsed);
-    connect(controllable, &star_widget::paused_state_changed, this, &auto_visibility_controller::state_changed);
+    connect(controllable, &star_widget::paused_state_changed, this, &auto_visibility_controller::paused_state_changed);
     sync_state();
 }
 
@@ -44,7 +44,7 @@ void auto_visibility_controller::goto_star()
     sync_state();
 }
 
-void auto_visibility_controller::state_changed()
+void auto_visibility_controller::paused_state_changed()
 {
     if (controllable->is_running())
     {
