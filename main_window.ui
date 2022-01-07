@@ -85,7 +85,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="sharpness_edit">
+        <widget class="sharpness_line_edit" name="sharpness_edit">
          <property name="text">
           <string>0.93</string>
          </property>
@@ -380,6 +380,11 @@
    <extends>QWidget</extends>
    <header>star_widget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>sharpness_line_edit</class>
+   <extends>QLineEdit</extends>
+   <header>sharpness_line_edit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

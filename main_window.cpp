@@ -35,6 +35,7 @@ main_window::main_window(QWidget *parent)
     , ui(new Ui::main_window)
 {
     ui->setupUi(this);
+
     ui->triangles_color_button->setColor(QColor::fromRgbF(0.25, 0.6, 0.225));
     ui->squares_color_button->setColor(QColor::fromRgbF(0.9, 0.6, 0.1));
     ui->circle_color_button->setColor(QColor::fromRgbF(0.9, 0.3, 0.45));
@@ -42,7 +43,12 @@ main_window::main_window(QWidget *parent)
     ui->dots_color_button->setColor(QColor::fromRgbF(71. / 255., 64. / 255., 199. / 255.));
     connect(ui->numerator_spinbox, &QSpinBox::textChanged, this, &main_window::numerator_changed);
     connect(ui->denominator_spinbox, &QSpinBox::textChanged, this, &main_window::denominator_changed);
-    connect(ui->sharpness_edit, &QLineEdit::textChanged, this, &main_window::sharpness_changed);
+    connect(ui->sharpness_edit, &sharpness_line_edit::value_changed, this, [this] (double value)
+    {
+        ui->animation->set_sharpness(value);
+        if (avc)
+            avc->goto_star();
+    });
     connect(ui->visibility_combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(visibility_changed()));
     connect(ui->triangles_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
@@ -92,9 +98,9 @@ main_window::main_window(QWidget *parent)
     });
 
     denominator_changed();
-    sharpness_changed();
-    visibility_changed();
+    ui->animation->set_sharpness(ui->sharpness_edit->get_value());
 
+    visibility_changed();
     ui->animation->set_color(chart_element_id::triangles, ui->triangles_color_button->color());
     ui->animation->set_color(chart_element_id::squares, ui->squares_color_button->color());
     ui->animation->set_color(chart_element_id::circles, ui->circle_color_button->color());
@@ -127,23 +133,6 @@ void main_window::denominator_changed()
         avc->goto_star();
     update_labels();
     update_checkboxes();
-}
-
-void main_window::sharpness_changed()
-{
-    double tmp;
-    bool ok;
-    tmp = ui->sharpness_edit->text().toDouble(&ok);
-    if (!ok)
-        tmp = 0.93;
-    else
-    {
-        if (tmp < 0.)
-            tmp = 0.;
-    }
-    ui->animation->set_sharpness(tmp);
-    if (avc)
-        avc->goto_star();
 }
 
 void main_window::visibility_changed()

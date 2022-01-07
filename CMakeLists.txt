@@ -29,6 +29,8 @@ set(PROJECT_SOURCES
         kcolorbutton.cpp
         douglas_peucker.h
         douglas_peucker.cpp
+        sharpness_line_edit.h
+        sharpness_line_edit.cpp
         main_window.ui
 )
 
