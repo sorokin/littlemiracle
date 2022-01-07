@@ -11,7 +11,6 @@
 
 namespace
 {
-    constexpr QPointF ORIGIN = QPointF();
     constexpr double STATIC_CIRCLE_R = 0.48;
 
     QPointF from_polar(double phi, double radius)
@@ -26,7 +25,7 @@ namespace
 
     QPointF point_on_rotating_circle(double static_r, double rotating_r, double phi, double smoothness)
     {
-        return ORIGIN + from_polar(phi, static_r - rotating_r) + smoothness * from_polar(rotating_circle_angle(static_r, rotating_r, phi), rotating_r);
+        return from_polar(phi, static_r - rotating_r) + smoothness * from_polar(rotating_circle_angle(static_r, rotating_r, phi), rotating_r);
     }
 }
 
@@ -213,7 +212,7 @@ void star_widget::paintEvent(QPaintEvent* event)
 
 void star_widget::draw_static_circle(QPainter& p)
 {
-    p.drawEllipse(ORIGIN, STATIC_CIRCLE_R, STATIC_CIRCLE_R);
+    p.drawEllipse(QPointF(), STATIC_CIRCLE_R, STATIC_CIRCLE_R);
 }
 
 void star_widget::draw_star(QPainter& p)
@@ -272,7 +271,7 @@ void star_widget::draw_rotating_circle(QPainter& p)
     p.setPen(pen);
 
     double r = rotating_circle_r();
-    QPointF center = ORIGIN + from_polar(phi, STATIC_CIRCLE_R - r);
+    QPointF center = from_polar(phi, STATIC_CIRCLE_R - r);
 
     p.drawEllipse(center, r, r);
 
