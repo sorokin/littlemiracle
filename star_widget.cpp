@@ -193,6 +193,7 @@ void star_widget::paintEvent(QPaintEvent* event)
         double rotating_r = rotating_circle_r();
 
         std::vector<QPointF> points;
+        points.reserve(actual_num * co_num);
         for (size_t i = 0; i != actual_num * co_num; ++i)
             points.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, rotating_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
 
