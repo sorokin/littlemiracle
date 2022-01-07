@@ -147,15 +147,13 @@ void star_widget::paintEvent(QPaintEvent* event)
             p.setRenderHint(QPainter::Antialiasing, true);
         p.translate(QPointF(width(), height()) / 2.);
         double scale = std::min(width(), height());
+        double extra_scale = 1.;
         if (sharpness > 1.)
-            scale *= 2 / (1 + sharpness);
-        p.scale(scale, -scale);
+            extra_scale = (1. + sharpness) / 2.;
+        p.scale(scale / extra_scale, -(scale / extra_scale));
         {
             QPen pen = p.pen();
-            double w = 0.003;
-            if (sharpness > 1.)
-                w *= (1 + sharpness) / 2;
-            pen.setWidthF(w);
+            pen.setWidthF(0.003 * extra_scale);
             p.setPen(pen);
         }
 
@@ -235,7 +233,7 @@ void star_widget::paintEvent(QPaintEvent* event)
             }
     
             for (size_t i = 0; i != points.size(); ++i)
-                p.drawEllipse(points[i], 0.01, 0.01);
+                p.drawEllipse(points[i], 0.01 * extra_scale, 0.01 * extra_scale);
         }
     }
 
