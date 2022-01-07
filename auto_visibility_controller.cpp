@@ -28,8 +28,8 @@ namespace
     };
 }
 
-auto_visibility_controller::auto_visibility_controller(QWidget* parent, star_widget* controllable)
-    : QWidget(parent)
+auto_visibility_controller::auto_visibility_controller(QObject* parent, star_widget* controllable)
+    : QObject(parent)
     , controllable(controllable)
     , current_state(0)
 {

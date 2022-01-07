@@ -9,13 +9,13 @@
 
 struct star_widget;
 
-struct auto_visibility_controller : QWidget
+struct auto_visibility_controller : QObject
 {
 private:
     Q_OBJECT
 
 public:
-    auto_visibility_controller(QWidget* parent, star_widget* controllable);
+    auto_visibility_controller(QObject* parent, star_widget* controllable);
 
     void goto_star();
 
