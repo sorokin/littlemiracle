@@ -4,9 +4,7 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef KCOLORBUTTON_H
-#define KCOLORBUTTON_H
-
+#pragma once
 #include <QPushButton>
 #include <memory>
 
@@ -102,5 +100,3 @@ protected:
 private:
     std::unique_ptr<class KColorButtonPrivate> const d;
 };
-
-#endif

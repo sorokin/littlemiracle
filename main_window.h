@@ -1,6 +1,4 @@
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
-
+#pragma once
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -34,5 +32,3 @@ private:
     Ui::main_window *ui;
     auto_visibility_controller* avc = nullptr;
 };
-
-#endif // MAIN_WINDOW_H

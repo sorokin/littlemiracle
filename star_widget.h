@@ -1,6 +1,4 @@
-#ifndef STAR_WIDGET_H
-#define STAR_WIDGET_H
-
+#pragma once
 #include <QWidget>
 #include <QElapsedTimer>
 #include <QPainterPath>
@@ -76,5 +74,3 @@ public:
 
     static constexpr double big_r = 0.48;
 };
-
-#endif // STAR_WIDGET_H
