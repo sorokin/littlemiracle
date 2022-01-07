@@ -32,6 +32,7 @@ set(PROJECT_SOURCES
         sharpness_line_edit.h
         sharpness_line_edit.cpp
         main_window.ui
+        resources.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

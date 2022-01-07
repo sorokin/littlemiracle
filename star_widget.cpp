@@ -3,8 +3,12 @@
 // LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "star_widget.h"
+#include <QApplication>
+#include <QClipboard>
+#include <QStyle>
 #include <QPainter>
 #include <QPainterPath>
+#include <QMenu>
 #include <QMouseEvent>
 #include <cmath>
 #include "douglas_peucker.h"
@@ -31,11 +35,25 @@ namespace
 
 star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
+    , pause_resume_action(new QAction(this))
+    , copy_image_action(new QAction("Copy Image", this))
 {
+    pause_resume_action->setShortcut(QKeySequence("Space"));
+    connect(pause_resume_action, &QAction::triggered,
+            this, [this](bool) { toggle_paused_state(); });
+    addAction(pause_resume_action);
+
+    copy_image_action->setIcon(QIcon(":/icons/copy.svg"));
+    copy_image_action->setShortcut(QKeySequence("Ctrl+C"));
+    connect(copy_image_action, &QAction::triggered,
+            this, [this](bool) { copy_image_to_clipboard(); });
+    addAction(copy_image_action);
+
     setFocusPolicy(Qt::StrongFocus);
     phi_timer.start();
     alpha_timer.start();
     validate_star_path();
+
 }
 
 void star_widget::set_desired_num(size_t num)
@@ -137,16 +155,19 @@ bool star_widget::is_running() const
     return phi_timer.isValid();
 }
 
-void star_widget::keyPressEvent(QKeyEvent* e)
+void star_widget::contextMenuEvent(QContextMenuEvent* e)
 {
-    if (e->key() == Qt::Key_Space)
-    {
-        e->accept();
-        toggle_paused_state();
-        return;
-    }
+    pause_resume_action->setIcon(is_running()
+        ? style()->standardIcon(QStyle::SP_MediaPause)
+        : style()->standardIcon(QStyle::SP_MediaPlay));
+    pause_resume_action->setText(is_running() ? "Pause" : "Resume");
 
-    QWidget::keyPressEvent(e);
+    auto menu = std::make_unique<QMenu>(this);
+
+    menu->addAction(pause_resume_action);
+    menu->addSeparator();
+    menu->addAction(copy_image_action);
+    menu->exec(e->globalPos());
 }
 
 void star_widget::mousePressEvent(QMouseEvent* e)
@@ -164,43 +185,12 @@ void star_widget::mousePressEvent(QMouseEvent* e)
 void star_widget::paintEvent(QPaintEvent* event)
 {
     QElapsedTimer paint_timer;
+    paint_timer.start();
     {
-        paint_timer.start();
         QPainter p(this);
         if (enable_antialiasing)
             p.setRenderHint(QPainter::Antialiasing, true);
-        p.translate(QPointF(width(), height()) / 2.);
-        double scale = std::min(width(), height());
-        double extra_scale = 1.;
-        if (sharpness > 1.)
-            extra_scale = (1. + sharpness) / 2.;
-        p.scale(scale / extra_scale, -(scale / extra_scale));
-        {
-            QPen pen = p.pen();
-            pen.setWidthF(0.003 * extra_scale);
-            p.setPen(pen);
-        }
-
-        draw_static_circle(p);
-
-        update_alpha();
-
-        draw_star(p);
-
-        update_phi();
-
-        size_t co_num = get_actual_co_num();
-        double rotating_r = rotating_circle_r();
-
-        std::vector<QPointF> points;
-        points.reserve(actual_num * co_num);
-        for (size_t i = 0; i != actual_num * co_num; ++i)
-            points.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, rotating_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
-
-        draw_triangles(p, points);
-        draw_squares(p, points);
-        draw_rotating_circle(p);
-        draw_dots(p, points, extra_scale);
+        draw_scene(p, width(), height());
     }
 
     qint64 paint_time = paint_timer.nsecsElapsed();
@@ -214,6 +204,42 @@ void star_widget::paintEvent(QPaintEvent* event)
 
     if (phi_timer.isValid() || alpha_timer.isValid())
         update();
+}
+
+void star_widget::draw_scene(QPainter& p, int width, int height)
+{
+    p.translate(QPointF(width, height) / 2.);
+    double scale = std::min(width, height);
+    double extra_scale = 1.;
+    if (sharpness > 1.)
+        extra_scale = (1. + sharpness) / 2.;
+    p.scale(scale / extra_scale, -(scale / extra_scale));
+    {
+        QPen pen = p.pen();
+        pen.setWidthF(0.003 * extra_scale);
+        p.setPen(pen);
+    }
+
+    draw_static_circle(p);
+
+    update_alpha();
+
+    draw_star(p);
+
+    update_phi();
+
+    size_t co_num = get_actual_co_num();
+    double rotating_r = rotating_circle_r();
+
+    std::vector<QPointF> points;
+    points.reserve(actual_num * co_num);
+    for (size_t i = 0; i != actual_num * co_num; ++i)
+        points.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, rotating_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
+
+    draw_triangles(p, points);
+    draw_squares(p, points);
+    draw_rotating_circle(p);
+    draw_dots(p, points, extra_scale);
 }
 
 void star_widget::draw_static_circle(QPainter& p)
@@ -441,4 +467,15 @@ void star_widget::update_alpha()
 
     if (!need_alpha_animation())
         alpha_timer.invalidate();
+}
+
+void star_widget::copy_image_to_clipboard()
+{
+    int size = std::min(width(), height());
+    QImage image(size, size, QImage::Format_RGB888);
+    image.fill(palette().color(backgroundRole()));
+    QPainter p(&image);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    draw_scene(p, size, size);
+    QApplication::clipboard()->setImage(image);
 }

@@ -41,9 +41,11 @@ signals:
     void paused_state_changed();
 
 private:
-    void keyPressEvent(QKeyEvent*) override;
+    void contextMenuEvent(QContextMenuEvent*) override;
     void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
+
+    void draw_scene(QPainter& p, int width, int height);
 
     void draw_static_circle(QPainter& p);
     void draw_star(QPainter& p);
@@ -65,7 +67,12 @@ private:
     void update_phi();
     void update_alpha();
 
+    void copy_image_to_clipboard();
+
 private:
+    QAction* pause_resume_action;
+    QAction* copy_image_action;
+
     size_t desired_num = 3;
     size_t desired_denom = 7;
     size_t actual_num = 3;
