@@ -90,6 +90,12 @@ size_t star_widget::get_actual_denom() const
     return actual_denom;
 }
 
+size_t star_widget::get_actual_co_num() const
+{
+    assert(actual_num < actual_denom);
+    return actual_denom - actual_num;
+}
+
 void star_widget::set_visibility(visibility_flags visibility)
 {
     this->visibility = visibility;
@@ -188,8 +194,7 @@ void star_widget::paintEvent(QPaintEvent* event)
 
         update_phi();
 
-        assert(actual_num < actual_denom);
-        size_t co_num = actual_denom - actual_num;
+        size_t co_num = get_actual_co_num();
         double small_r = rotating_circle_r();
 
         std::vector<QPointF> points;

@@ -27,6 +27,7 @@ public:
     size_t get_desired_denom() const;
     size_t get_actual_num() const;
     size_t get_actual_denom() const;
+    size_t get_actual_co_num() const;
 
     void set_visibility(visibility_flags visibility);
     void set_visibility(chart_element_id element, bool visible);

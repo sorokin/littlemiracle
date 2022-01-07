@@ -170,7 +170,7 @@ void main_window::visibility_changed()
 
 void main_window::update_labels()
 {
-    size_t co_num = ui->animation->get_actual_denom() - ui->animation->get_actual_num();
+    size_t co_num = ui->animation->get_actual_co_num();
 
     ui->triangles_color_label->setText(polygon_name(ui->animation->get_actual_num()));
     ui->triangles_checkbox->setText(polygon_name(ui->animation->get_actual_num()));
@@ -182,7 +182,7 @@ void main_window::update_labels()
 void main_window::update_checkboxes()
 {
     bool custom = !avc;
-    size_t co_num = ui->animation->get_actual_denom() - ui->animation->get_actual_num();
+    size_t co_num = ui->animation->get_actual_co_num();
 
     ui->star_checkbox->setEnabled(custom);
     ui->triangles_checkbox->setEnabled(custom && ui->animation->get_actual_num() != 1);
