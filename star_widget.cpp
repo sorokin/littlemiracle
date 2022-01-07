@@ -164,11 +164,11 @@ void star_widget::paintEvent(QPaintEvent* event)
 
         update_alpha();
 
-        if (current_alpha[chart_element_id::stars] != 0.)
+        if (current_alpha[chart_element_id::star] != 0.)
         {
             {
                 QPen pen = p.pen();
-                pen.setColor(get_color(chart_element_id::stars));
+                pen.setColor(get_color(chart_element_id::star));
                 p.setPen(pen);
             }
 
@@ -210,10 +210,10 @@ void star_widget::paintEvent(QPaintEvent* event)
                     draw_polygon(p, points.data() + i, co_num, actual_num);
         }
     
-        if (current_alpha[chart_element_id::circles] != 0.)
+        if (current_alpha[chart_element_id::circle] != 0.)
         {
             QPen pen = p.pen();
-            pen.setColor(get_color(chart_element_id::circles));
+            pen.setColor(get_color(chart_element_id::circle));
             p.setPen(pen);
             
             draw_circle(p, ORIGIN + from_polar(phi, STATIC_CIRCLE_R - small_r), small_r, rotating_circle_angle(STATIC_CIRCLE_R, small_r, phi));

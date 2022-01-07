@@ -4,10 +4,10 @@
 
 enum class chart_element_id : size_t
 {
-    stars,
+    star,
     triangles,
     squares,
-    circles,
+    circle,
     dots,
 
     max

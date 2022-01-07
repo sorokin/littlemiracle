@@ -60,11 +60,11 @@ main_window::main_window(QWidget *parent)
     });
     connect(ui->circle_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->animation->set_visibility(chart_element_id::circles, checked);
+        ui->animation->set_visibility(chart_element_id::circle, checked);
     });
     connect(ui->star_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->animation->set_visibility(chart_element_id::stars, checked);
+        ui->animation->set_visibility(chart_element_id::star, checked);
     });
     connect(ui->dots_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
@@ -73,7 +73,7 @@ main_window::main_window(QWidget *parent)
 
     connect(ui->star_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->animation->set_color(chart_element_id::stars, color);
+        ui->animation->set_color(chart_element_id::star, color);
     });
     connect(ui->triangles_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
@@ -85,7 +85,7 @@ main_window::main_window(QWidget *parent)
     });
     connect(ui->circle_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->animation->set_color(chart_element_id::circles, color);
+        ui->animation->set_color(chart_element_id::circle, color);
     });
     connect(ui->dots_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
@@ -103,8 +103,8 @@ main_window::main_window(QWidget *parent)
     visibility_changed();
     ui->animation->set_color(chart_element_id::triangles, ui->triangles_color_button->color());
     ui->animation->set_color(chart_element_id::squares, ui->squares_color_button->color());
-    ui->animation->set_color(chart_element_id::circles, ui->circle_color_button->color());
-    ui->animation->set_color(chart_element_id::stars, ui->star_color_button->color());
+    ui->animation->set_color(chart_element_id::circle, ui->circle_color_button->color());
+    ui->animation->set_color(chart_element_id::star, ui->star_color_button->color());
     ui->animation->set_color(chart_element_id::dots, ui->dots_color_button->color());
 
     ui->animation->set_antialiasing(ui->antialiasing_checkbox->isChecked());
