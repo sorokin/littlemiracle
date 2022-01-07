@@ -25,6 +25,7 @@ public:
     size_t get_actual_denom() const;
 
     void set_visibility(visibility_flags visibility);
+    void set_visibility(chart_element_id element, bool visible);
     void set_color(chart_element_id element, QColor color);
     void set_antialiasing(bool enabled);
 

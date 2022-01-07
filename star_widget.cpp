@@ -92,6 +92,16 @@ void star_widget::set_visibility(visibility_flags visibility)
     update();
 }
 
+void star_widget::set_visibility(chart_element_id element, bool visible)
+{
+    this->visibility[element] = visible;
+    if (need_alpha_animation())
+        alpha_timer.start();
+    else
+        alpha_timer.invalidate();
+    update();
+}
+
 void star_widget::set_color(chart_element_id element, QColor color)
 {
     colors[element] = color;

@@ -44,22 +44,64 @@ main_window::main_window(QWidget *parent)
     connect(ui->spinBox_2, &QSpinBox::textChanged, this, &main_window::denominator_changed);
     connect(ui->lineEdit_3, &QLineEdit::textChanged, this, &main_window::smoothness_changed);
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(visibility_changed()));
-    connect(ui->checkBox, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
-    connect(ui->checkBox_2, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
-    connect(ui->checkBox_3, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
-    connect(ui->checkBox_4, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
-    connect(ui->checkBox_5, SIGNAL(clicked(bool)), this, SLOT(checkbox_changed()));
-    connect(ui->kcolorbutton, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
-    connect(ui->kcolorbutton_2, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
-    connect(ui->kcolorbutton_3, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
-    connect(ui->kcolorbutton_4, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
-    connect(ui->kcolorbutton_5, SIGNAL(changed(QColor)), this, SLOT(color_changed()));
-    connect(ui->checkBox_6, SIGNAL(clicked(bool)), this, SLOT(antialiasing_changed()));
+    connect(ui->checkBox, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->widget->set_visibility(chart_element_id::triangles, checked);
+    });
+    connect(ui->checkBox_2, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->widget->set_visibility(chart_element_id::squares, checked);
+    });
+    connect(ui->checkBox_3, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->widget->set_visibility(chart_element_id::circles, checked);
+    });
+    connect(ui->checkBox_4, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->widget->set_visibility(chart_element_id::stars, checked);
+    });
+    connect(ui->checkBox_5, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->widget->set_visibility(chart_element_id::dots, checked);
+    });
+
+    connect(ui->kcolorbutton, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->widget->set_color(chart_element_id::stars, color);
+    });
+    connect(ui->kcolorbutton_2, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->widget->set_color(chart_element_id::triangles, color);
+    });
+    connect(ui->kcolorbutton_3, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->widget->set_color(chart_element_id::squares, color);
+    });
+    connect(ui->kcolorbutton_4, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->widget->set_color(chart_element_id::circles, color);
+    });
+    connect(ui->kcolorbutton_5, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->widget->set_color(chart_element_id::dots, color);
+    });
+
+    connect(ui->checkBox_6, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->widget->set_antialiasing(ui->checkBox_6->isChecked());
+    });
+
     denominator_changed();
     smoothness_changed();
     visibility_changed();
-    color_changed();
-    antialiasing_changed();
+
+    ui->widget->set_color(chart_element_id::triangles, ui->kcolorbutton_2->color());
+    ui->widget->set_color(chart_element_id::squares, ui->kcolorbutton_3->color());
+    ui->widget->set_color(chart_element_id::circles, ui->kcolorbutton_4->color());
+    ui->widget->set_color(chart_element_id::stars, ui->kcolorbutton->color());
+    ui->widget->set_color(chart_element_id::dots, ui->kcolorbutton_5->color());
+
+    ui->widget->set_antialiasing(ui->checkBox_6->isChecked());
 }
 
 main_window::~main_window()
@@ -117,42 +159,20 @@ void main_window::visibility_changed()
         delete avc;
         avc = nullptr;
         update_checkboxes();
-        checkbox_changed();
+
+        ui->widget->set_visibility({{
+            ui->checkBox_4->isChecked(),
+            ui->checkBox->isChecked(),
+            ui->checkBox_2->isChecked(),
+            ui->checkBox_3->isChecked(),
+            ui->checkBox_5->isChecked()
+        }});
+
         break;
     default:
         assert(false);
         break;
     }
-}
-
-void main_window::checkbox_changed()
-{
-    assert(ui->comboBox->currentIndex() == 1);
-
-    visibility_flags visibility =
-    {{
-        ui->checkBox_4->isChecked(),
-        ui->checkBox->isChecked(),
-        ui->checkBox_2->isChecked(),
-        ui->checkBox_3->isChecked(),
-        ui->checkBox_5->isChecked()
-    }};
-
-    ui->widget->set_visibility(visibility);
-}
-
-void main_window::color_changed()
-{
-    ui->widget->set_color(chart_element_id::triangles, ui->kcolorbutton_2->color());
-    ui->widget->set_color(chart_element_id::squares, ui->kcolorbutton_3->color());
-    ui->widget->set_color(chart_element_id::circles, ui->kcolorbutton_4->color());
-    ui->widget->set_color(chart_element_id::stars, ui->kcolorbutton->color());
-    ui->widget->set_color(chart_element_id::dots, ui->kcolorbutton_5->color());
-}
-
-void main_window::antialiasing_changed()
-{
-    ui->widget->set_antialiasing(ui->checkBox_6->isChecked());
 }
 
 void main_window::update_labels()
