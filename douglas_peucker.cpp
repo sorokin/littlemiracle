@@ -7,13 +7,21 @@
 
 namespace
 {
+    double norm(QPointF v)
+    {
+        return std::sqrt(QPointF::dotProduct(v, v));
+    }
+
+    double mixed_product(QPointF v1, QPointF v2)
+    {
+        return v1.x() * v2.y() - v2.x() * v1.y();
+    }
+
     double point_line_distance(QPointF p, QPointF line_p1, QPointF line_p2)
     {
         QPointF v1 = p - line_p1;
         QPointF v2 = line_p2 - line_p1;
-        double v2_len = sqrt(QPointF::dotProduct(v2, v2));
-        double cross_product = v1.x() * v2.y() - v2.x() * v1.y();
-        return std::abs(cross_product / v2_len);
+        return std::abs(mixed_product(v1, v2) / norm(v2));
     }
 
     void simplify_rec(QPointF const* in, size_t n, double eps, std::vector<QPointF>& out)
