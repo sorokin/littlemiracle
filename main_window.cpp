@@ -131,8 +131,8 @@ void main_window::numerator_changed()
 void main_window::denominator_changed()
 {
     size_t denom = ui->denominator_spinbox->value();
-    ui->animation->set_desired_denom(denom);
     ui->numerator_spinbox->setMaximum(denom - 1);
+    ui->animation->set_desired_denom(denom);
     if (avc)
         avc->goto_star();
     update_labels();

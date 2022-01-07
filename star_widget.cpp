@@ -41,6 +41,7 @@ star_widget::star_widget(QWidget* parent)
 
 void star_widget::set_desired_num(size_t num)
 {
+    assert(num < desired_denom);
     this->desired_num = num;
     update_actual_num_denom();
     validate_star_path();
@@ -48,6 +49,7 @@ void star_widget::set_desired_num(size_t num)
 
 void star_widget::set_desired_denom(size_t denom)
 {
+    assert(desired_num < denom);
     this->desired_denom = denom;
     update_actual_num_denom();
     validate_star_path();
@@ -55,6 +57,7 @@ void star_widget::set_desired_denom(size_t denom)
 
 void star_widget::set_desired_num_denom(size_t num, size_t denom)
 {
+    assert(num < denom);
     this->desired_num = num;
     this->desired_denom = denom;
     update_actual_num_denom();
@@ -169,9 +172,6 @@ void star_widget::paintEvent(QPaintEvent* event)
         }
 
         p.drawEllipse(ORIGIN, STATIC_CIRCLE_R, STATIC_CIRCLE_R);
-    
-        if (actual_num > actual_denom)
-            return;
 
         update_alpha();
 
@@ -188,6 +188,7 @@ void star_widget::paintEvent(QPaintEvent* event)
 
         update_phi();
 
+        assert(actual_num < actual_denom);
         size_t co_num = actual_denom - actual_num;
         double small_r = rotating_circle_r();
 
@@ -334,9 +335,13 @@ void star_widget::toggle_state()
 
 void star_widget::update_actual_num_denom()
 {
+    assert(desired_num < desired_denom);
+
     size_t d = std::gcd(desired_num, desired_denom);
     actual_num = desired_num / d;
     actual_denom = desired_denom / d;
+
+    assert(actual_num < actual_denom);
 }
 
 void star_widget::validate_star_path()
