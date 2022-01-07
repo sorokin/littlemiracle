@@ -35,73 +35,73 @@ main_window::main_window(QWidget *parent)
     , ui(new Ui::main_window)
 {
     ui->setupUi(this);
-    ui->kcolorbutton_2->setColor(QColor::fromRgbF(0.25, 0.6, 0.225));
-    ui->kcolorbutton_3->setColor(QColor::fromRgbF(0.9, 0.6, 0.1));
-    ui->kcolorbutton_4->setColor(QColor::fromRgbF(0.9, 0.3, 0.45));
-    ui->kcolorbutton->setColor(QColor::fromRgbF(64. / 255., 163. / 255., 199. / 255.));
-    ui->kcolorbutton_5->setColor(QColor::fromRgbF(71. / 255., 64. / 255., 199. / 255.));
-    connect(ui->spinBox, &QSpinBox::textChanged, this, &main_window::numerator_changed);
-    connect(ui->spinBox_2, &QSpinBox::textChanged, this, &main_window::denominator_changed);
-    connect(ui->lineEdit_3, &QLineEdit::textChanged, this, &main_window::smoothness_changed);
-    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(visibility_changed()));
-    connect(ui->checkBox, &QCheckBox::toggled, this, [this] (bool checked)
+    ui->triangles_color_button->setColor(QColor::fromRgbF(0.25, 0.6, 0.225));
+    ui->squares_color_button->setColor(QColor::fromRgbF(0.9, 0.6, 0.1));
+    ui->circle_color_button->setColor(QColor::fromRgbF(0.9, 0.3, 0.45));
+    ui->star_color_button->setColor(QColor::fromRgbF(64. / 255., 163. / 255., 199. / 255.));
+    ui->dots_color_button->setColor(QColor::fromRgbF(71. / 255., 64. / 255., 199. / 255.));
+    connect(ui->numerator_spinbox, &QSpinBox::textChanged, this, &main_window::numerator_changed);
+    connect(ui->denominator_spinbox, &QSpinBox::textChanged, this, &main_window::denominator_changed);
+    connect(ui->sharpness_edit, &QLineEdit::textChanged, this, &main_window::sharpness_changed);
+    connect(ui->visibility_combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(visibility_changed()));
+    connect(ui->triangles_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->widget->set_visibility(chart_element_id::triangles, checked);
+        ui->animation->set_visibility(chart_element_id::triangles, checked);
     });
-    connect(ui->checkBox_2, &QCheckBox::toggled, this, [this] (bool checked)
+    connect(ui->squares_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->widget->set_visibility(chart_element_id::squares, checked);
+        ui->animation->set_visibility(chart_element_id::squares, checked);
     });
-    connect(ui->checkBox_3, &QCheckBox::toggled, this, [this] (bool checked)
+    connect(ui->circle_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->widget->set_visibility(chart_element_id::circles, checked);
+        ui->animation->set_visibility(chart_element_id::circles, checked);
     });
-    connect(ui->checkBox_4, &QCheckBox::toggled, this, [this] (bool checked)
+    connect(ui->star_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->widget->set_visibility(chart_element_id::stars, checked);
+        ui->animation->set_visibility(chart_element_id::stars, checked);
     });
-    connect(ui->checkBox_5, &QCheckBox::toggled, this, [this] (bool checked)
+    connect(ui->dots_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->widget->set_visibility(chart_element_id::dots, checked);
-    });
-
-    connect(ui->kcolorbutton, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->widget->set_color(chart_element_id::stars, color);
-    });
-    connect(ui->kcolorbutton_2, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->widget->set_color(chart_element_id::triangles, color);
-    });
-    connect(ui->kcolorbutton_3, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->widget->set_color(chart_element_id::squares, color);
-    });
-    connect(ui->kcolorbutton_4, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->widget->set_color(chart_element_id::circles, color);
-    });
-    connect(ui->kcolorbutton_5, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->widget->set_color(chart_element_id::dots, color);
+        ui->animation->set_visibility(chart_element_id::dots, checked);
     });
 
-    connect(ui->checkBox_6, &QCheckBox::toggled, this, [this] (bool checked)
+    connect(ui->star_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->widget->set_antialiasing(ui->checkBox_6->isChecked());
+        ui->animation->set_color(chart_element_id::stars, color);
+    });
+    connect(ui->triangles_color_button, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->animation->set_color(chart_element_id::triangles, color);
+    });
+    connect(ui->squares_color_button, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->animation->set_color(chart_element_id::squares, color);
+    });
+    connect(ui->circle_color_button, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->animation->set_color(chart_element_id::circles, color);
+    });
+    connect(ui->dots_color_button, &KColorButton::changed, this, [this] (QColor color)
+    {
+        ui->animation->set_color(chart_element_id::dots, color);
+    });
+
+    connect(ui->antialiasing_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->animation->set_antialiasing(checked);
     });
 
     denominator_changed();
-    smoothness_changed();
+    sharpness_changed();
     visibility_changed();
 
-    ui->widget->set_color(chart_element_id::triangles, ui->kcolorbutton_2->color());
-    ui->widget->set_color(chart_element_id::squares, ui->kcolorbutton_3->color());
-    ui->widget->set_color(chart_element_id::circles, ui->kcolorbutton_4->color());
-    ui->widget->set_color(chart_element_id::stars, ui->kcolorbutton->color());
-    ui->widget->set_color(chart_element_id::dots, ui->kcolorbutton_5->color());
+    ui->animation->set_color(chart_element_id::triangles, ui->triangles_color_button->color());
+    ui->animation->set_color(chart_element_id::squares, ui->squares_color_button->color());
+    ui->animation->set_color(chart_element_id::circles, ui->circle_color_button->color());
+    ui->animation->set_color(chart_element_id::stars, ui->star_color_button->color());
+    ui->animation->set_color(chart_element_id::dots, ui->dots_color_button->color());
 
-    ui->widget->set_antialiasing(ui->checkBox_6->isChecked());
+    ui->animation->set_antialiasing(ui->antialiasing_checkbox->isChecked());
 }
 
 main_window::~main_window()
@@ -111,7 +111,7 @@ main_window::~main_window()
 
 void main_window::numerator_changed()
 {
-    ui->widget->set_desired_num(ui->spinBox->value());
+    ui->animation->set_desired_num(ui->numerator_spinbox->value());
     if (avc)
         avc->goto_star();
     update_labels();
@@ -120,20 +120,20 @@ void main_window::numerator_changed()
 
 void main_window::denominator_changed()
 {
-    size_t denom = ui->spinBox_2->value();
-    ui->widget->set_desired_denom(denom);
-    ui->spinBox->setMaximum(denom - 1);
+    size_t denom = ui->denominator_spinbox->value();
+    ui->animation->set_desired_denom(denom);
+    ui->numerator_spinbox->setMaximum(denom - 1);
     if (avc)
         avc->goto_star();
     update_labels();
     update_checkboxes();
 }
 
-void main_window::smoothness_changed()
+void main_window::sharpness_changed()
 {
     double tmp;
     bool ok;
-    tmp = ui->lineEdit_3->text().toDouble(&ok);
+    tmp = ui->sharpness_edit->text().toDouble(&ok);
     if (!ok)
         tmp = 0.93;
     else
@@ -141,18 +141,18 @@ void main_window::smoothness_changed()
         if (tmp < 0.)
             tmp = 0.;
     }
-    ui->widget->set_sharpness(tmp);
+    ui->animation->set_sharpness(tmp);
     if (avc)
         avc->goto_star();
 }
 
 void main_window::visibility_changed()
 {
-    switch (ui->comboBox->currentIndex())
+    switch (ui->visibility_combobox->currentIndex())
     {
     case 0:
         assert(!avc);
-        avc = new auto_visibility_controller(this, ui->widget);
+        avc = new auto_visibility_controller(this, ui->animation);
         update_checkboxes();
         break;
     case 1:
@@ -160,12 +160,12 @@ void main_window::visibility_changed()
         avc = nullptr;
         update_checkboxes();
 
-        ui->widget->set_visibility({{
-            ui->checkBox_4->isChecked(),
-            ui->checkBox->isChecked(),
-            ui->checkBox_2->isChecked(),
-            ui->checkBox_3->isChecked(),
-            ui->checkBox_5->isChecked()
+        ui->animation->set_visibility({{
+            ui->star_checkbox->isChecked(),
+            ui->triangles_checkbox->isChecked(),
+            ui->squares_checkbox->isChecked(),
+            ui->circle_checkbox->isChecked(),
+            ui->dots_checkbox->isChecked()
         }});
 
         break;
@@ -177,26 +177,26 @@ void main_window::visibility_changed()
 
 void main_window::update_labels()
 {
-    size_t co_num = ui->widget->get_actual_denom() - ui->widget->get_actual_num();
+    size_t co_num = ui->animation->get_actual_denom() - ui->animation->get_actual_num();
 
-    ui->label_7->setText(polygon_name(ui->widget->get_actual_num()));
-    ui->checkBox->setText(polygon_name(ui->widget->get_actual_num()));
+    ui->triangles_color_label->setText(polygon_name(ui->animation->get_actual_num()));
+    ui->triangles_checkbox->setText(polygon_name(ui->animation->get_actual_num()));
 
-    ui->label_8->setText(polygon_name(co_num));
-    ui->checkBox_2->setText(polygon_name(co_num));
+    ui->squares_color_label->setText(polygon_name(co_num));
+    ui->squares_checkbox->setText(polygon_name(co_num));
 }
 
 void main_window::update_checkboxes()
 {
     bool custom = !avc;
-    size_t co_num = ui->widget->get_actual_denom() - ui->widget->get_actual_num();
+    size_t co_num = ui->animation->get_actual_denom() - ui->animation->get_actual_num();
 
-    ui->checkBox->setEnabled(custom && ui->widget->get_actual_num() != 1);
-    ui->checkBox_2->setEnabled(custom && co_num != 1);
-    ui->checkBox_3->setEnabled(custom);
-    ui->checkBox_4->setEnabled(custom);
-    ui->checkBox_5->setEnabled(custom);
+    ui->triangles_checkbox->setEnabled(custom && ui->animation->get_actual_num() != 1);
+    ui->squares_checkbox->setEnabled(custom && co_num != 1);
+    ui->circle_checkbox->setEnabled(custom);
+    ui->star_checkbox->setEnabled(custom);
+    ui->dots_checkbox->setEnabled(custom);
 
-    ui->label_7->setEnabled(ui->widget->get_actual_num() != 1);
-    ui->label_8->setEnabled(co_num != 1);
+    ui->triangles_color_label->setEnabled(ui->animation->get_actual_num() != 1);
+    ui->squares_color_label->setEnabled(co_num != 1);
 }

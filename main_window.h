@@ -18,7 +18,7 @@ public:
 public slots:
     void numerator_changed();
     void denominator_changed();
-    void smoothness_changed();
+    void sharpness_changed();
     void visibility_changed();
 
 private:
