@@ -8,7 +8,6 @@
 #include <QPainterPath>
 #include "visibility_flags.h"
 #include "enum_map.h"
-#include <optional>
 
 struct star_widget : QWidget
 {
