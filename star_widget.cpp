@@ -312,18 +312,6 @@ void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, s
     p.drawPath(path);
 }
 
-void star_widget::adjust_alpha(double& alpha, bool visible, double dt)
-{
-    if (!visible)
-        dt = -dt;
-
-    alpha += dt * 3e-9;
-    if (alpha < 0.)
-        alpha = 0.;
-    else if (alpha > 1.)
-        alpha = 1.;
-}
-
 bool star_widget::need_alpha_animation() const
 {
     for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
@@ -436,7 +424,13 @@ void star_widget::update_alpha()
     for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
     {
         auto e = static_cast<chart_element_id>(i);
-        adjust_alpha(current_alpha[e], visibility[e], dt);
+        double& alpha = current_alpha[e];
+
+        alpha += (visibility[e] ? dt : -dt) * 3e-9;
+        if (alpha < 0.)
+            alpha = 0.;
+        else if (alpha > 1.)
+            alpha = 1.;
     }
 
     if (!need_alpha_animation())

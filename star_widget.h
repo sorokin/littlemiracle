@@ -53,7 +53,6 @@ private:
 
     void draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step);
 
-    static void adjust_alpha(double& alpha, bool visible, double dt);
     bool need_alpha_animation() const;
     QColor get_color(chart_element_id e) const;
 
