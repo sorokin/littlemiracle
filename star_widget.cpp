@@ -29,6 +29,7 @@ namespace
 star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
 {
+    setFocusPolicy(Qt::StrongFocus);
     phi_timer.start();
     alpha_timer.start();
     validate_star_path();
@@ -119,18 +120,24 @@ bool star_widget::is_running() const
     return phi_timer.isValid();
 }
 
+void star_widget::keyPressEvent(QKeyEvent* e)
+{
+    if (e->key() == Qt::Key_Space)
+    {
+        e->accept();
+        toggle_state();
+        return;
+    }
+
+    QWidget::keyPressEvent(e);
+}
+
 void star_widget::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton)
     {
         e->accept();
-        if (phi_timer.isValid())
-            phi_timer.invalidate();
-        else
-            phi_timer.start();
-        update();
-
-        emit state_changed();
+        toggle_state();
         return;
     }
 
@@ -308,6 +315,17 @@ QColor star_widget::get_color(chart_element_id e) const
     QColor c = colors[e];
     c.setAlphaF(current_alpha[e]);
     return c;
+}
+
+void star_widget::toggle_state()
+{
+    if (phi_timer.isValid())
+        phi_timer.invalidate();
+    else
+        phi_timer.start();
+    update();
+
+    emit state_changed();
 }
 
 void star_widget::update_actual_num_denom()

@@ -35,6 +35,7 @@ signals:
     void state_changed();
 
 private:
+    void keyPressEvent(QKeyEvent*) override;
     void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
 
@@ -44,6 +45,8 @@ private:
     static void adjust_alpha(double& alpha, bool visible, double dt);
     bool need_alpha_animation() const;
     QColor get_color(chart_element_id e) const;
+
+    void toggle_state();
 
     void update_actual_num_denom();
     void validate_star_path();
