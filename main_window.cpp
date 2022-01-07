@@ -40,11 +40,6 @@ main_window::main_window(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->triangles_color_button->setColor(QColor::fromRgbF(0.25, 0.6, 0.225));
-    ui->squares_color_button->setColor(QColor::fromRgbF(0.9, 0.6, 0.1));
-    ui->circle_color_button->setColor(QColor::fromRgbF(0.9, 0.3, 0.45));
-    ui->star_color_button->setColor(QColor::fromRgbF(64. / 255., 163. / 255., 199. / 255.));
-    ui->dots_color_button->setColor(QColor::fromRgbF(71. / 255., 64. / 255., 199. / 255.));
     connect(ui->numerator_spinbox, &QSpinBox::textChanged, this, &main_window::numerator_changed);
     connect(ui->denominator_spinbox, &QSpinBox::textChanged, this, &main_window::denominator_changed);
     connect(ui->sharpness_edit, &sharpness_line_edit::value_changed, this, [this] (double value)
@@ -76,27 +71,6 @@ main_window::main_window(QWidget *parent)
         ui->animation->set_visibility(chart_element::dots, checked);
     });
 
-    connect(ui->star_color_button, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->animation->set_color(chart_element::star, color);
-    });
-    connect(ui->triangles_color_button, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->animation->set_color(chart_element::triangles, color);
-    });
-    connect(ui->squares_color_button, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->animation->set_color(chart_element::squares, color);
-    });
-    connect(ui->circle_color_button, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->animation->set_color(chart_element::circle, color);
-    });
-    connect(ui->dots_color_button, &KColorButton::changed, this, [this] (QColor color)
-    {
-        ui->animation->set_color(chart_element::dots, color);
-    });
-
     connect(ui->antialiasing_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
         ui->animation->set_antialiasing(checked);
@@ -114,11 +88,11 @@ main_window::main_window(QWidget *parent)
     ui->animation->set_sharpness(ui->sharpness_edit->get_value());
 
     visibility_changed();
-    ui->animation->set_color(chart_element::star, ui->star_color_button->color());
-    ui->animation->set_color(chart_element::triangles, ui->triangles_color_button->color());
-    ui->animation->set_color(chart_element::squares, ui->squares_color_button->color());
-    ui->animation->set_color(chart_element::circle, ui->circle_color_button->color());
-    ui->animation->set_color(chart_element::dots, ui->dots_color_button->color());
+    ui->animation->set_color(chart_element::star, QColor::fromRgbF(64. / 255., 163. / 255., 199. / 255.));
+    ui->animation->set_color(chart_element::triangles, QColor::fromRgbF(0.25, 0.6, 0.225));
+    ui->animation->set_color(chart_element::squares, QColor::fromRgbF(0.9, 0.6, 0.1));
+    ui->animation->set_color(chart_element::circle, QColor::fromRgbF(0.9, 0.3, 0.45));
+    ui->animation->set_color(chart_element::dots, QColor::fromRgbF(71. / 255., 64. / 255., 199. / 255.));
 
     ui->animation->set_antialiasing(ui->antialiasing_checkbox->isChecked());
     update_reset_to_default_action();
@@ -185,10 +159,7 @@ void main_window::update_labels()
 {
     size_t co_num = ui->animation->get_actual_co_num();
 
-    ui->triangles_color_label->setText(polygon_name(ui->animation->get_actual_num()));
     ui->triangles_checkbox->setText(polygon_name(ui->animation->get_actual_num()));
-
-    ui->squares_color_label->setText(polygon_name(co_num));
     ui->squares_checkbox->setText(polygon_name(co_num));
 }
 
@@ -202,9 +173,6 @@ void main_window::update_checkboxes()
     ui->squares_checkbox->setEnabled(custom && co_num != 1);
     ui->circle_checkbox->setEnabled(custom);
     ui->dots_checkbox->setEnabled(custom);
-
-    ui->triangles_color_label->setEnabled(ui->animation->get_actual_num() != 1);
-    ui->squares_color_label->setEnabled(co_num != 1);
 }
 
 void main_window::update_reset_to_default_action()
