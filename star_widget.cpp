@@ -110,7 +110,7 @@ void star_widget::set_visibility(visibility_flags visibility)
     update();
 }
 
-void star_widget::set_visibility(chart_element_id element, bool visible)
+void star_widget::set_visibility(chart_element element, bool visible)
 {
     this->visibility[element] = visible;
     if (need_alpha_animation())
@@ -120,7 +120,7 @@ void star_widget::set_visibility(chart_element_id element, bool visible)
     update();
 }
 
-void star_widget::set_color(chart_element_id element, QColor color)
+void star_widget::set_color(chart_element element, QColor color)
 {
     colors[element] = color;
     update();
@@ -222,11 +222,11 @@ void star_widget::draw_static_circle(QPainter& p)
 
 void star_widget::draw_star(QPainter& p)
 {
-    if (current_alpha[chart_element_id::star] == 0.)
+    if (current_alpha[chart_element::star] == 0.)
         return;
 
     QPen pen = p.pen();
-    pen.setColor(get_color(chart_element_id::star));
+    pen.setColor(get_color(chart_element::star));
     p.setPen(pen);
 
     p.drawPath(star_path_cache);
@@ -237,11 +237,11 @@ void star_widget::draw_triangles(QPainter& p, std::vector<QPointF> const& points
     size_t co_num = get_actual_co_num();
     assert(points.size() == actual_num * co_num);
 
-    if (current_alpha[chart_element_id::triangles] == 0.)
+    if (current_alpha[chart_element::triangles] == 0.)
         return;
 
     QPen pen = p.pen();
-    pen.setColor(get_color(chart_element_id::triangles));
+    pen.setColor(get_color(chart_element::triangles));
     p.setPen(pen);
 
     if (actual_num != 0)
@@ -254,11 +254,11 @@ void star_widget::draw_squares(QPainter& p, const std::vector<QPointF> &points)
     size_t co_num = get_actual_co_num();
     assert(points.size() == actual_num * co_num);
 
-    if (current_alpha[chart_element_id::squares] == 0.)
+    if (current_alpha[chart_element::squares] == 0.)
         return;
 
     QPen pen = p.pen();
-    pen.setColor(get_color(chart_element_id::squares));
+    pen.setColor(get_color(chart_element::squares));
     p.setPen(pen);
 
     if (co_num != 0)
@@ -268,11 +268,11 @@ void star_widget::draw_squares(QPainter& p, const std::vector<QPointF> &points)
 
 void star_widget::draw_rotating_circle(QPainter& p)
 {
-    if (current_alpha[chart_element_id::circle] == 0.)
+    if (current_alpha[chart_element::circle] == 0.)
         return;
 
     QPen pen = p.pen();
-    pen.setColor(get_color(chart_element_id::circle));
+    pen.setColor(get_color(chart_element::circle));
     p.setPen(pen);
 
     double rotating_r = rotating_circle_r();
@@ -291,7 +291,7 @@ void star_widget::draw_rotating_circle(QPainter& p)
 
 void star_widget::draw_dots(QPainter& p, std::vector<QPointF> const& points, double extra_scale)
 {
-    if (current_alpha[chart_element_id::dots] == 0.)
+    if (current_alpha[chart_element::dots] == 0.)
         return;
 
     QPen pen = p.pen();
@@ -299,7 +299,7 @@ void star_widget::draw_dots(QPainter& p, std::vector<QPointF> const& points, dou
     p.setPen(pen);
 
     QBrush brush = p.brush();
-    brush.setColor(get_color(chart_element_id::dots));
+    brush.setColor(get_color(chart_element::dots));
     brush.setStyle(Qt::SolidPattern);
     p.setBrush(brush);
 
@@ -319,9 +319,9 @@ void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, s
 
 bool star_widget::need_alpha_animation() const
 {
-    for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
+    for (size_t i = 0; i != static_cast<size_t>(chart_element::max); ++i)
     {
-        auto e = static_cast<chart_element_id>(i);
+        auto e = static_cast<chart_element>(i);
         if (visibility[e])
         {
             if (current_alpha[e] != 1.)
@@ -337,7 +337,7 @@ bool star_widget::need_alpha_animation() const
     return false;
 }
 
-QColor star_widget::get_color(chart_element_id e) const
+QColor star_widget::get_color(chart_element e) const
 {
     QColor c = colors[e];
     c.setAlphaF(current_alpha[e]);
@@ -426,9 +426,9 @@ void star_widget::update_alpha()
     qint64 dt = alpha_timer.nsecsElapsed();
     alpha_timer.start();
 
-    for (size_t i = 0; i != static_cast<size_t>(chart_element_id::max); ++i)
+    for (size_t i = 0; i != static_cast<size_t>(chart_element::max); ++i)
     {
-        auto e = static_cast<chart_element_id>(i);
+        auto e = static_cast<chart_element>(i);
         double& alpha = current_alpha[e];
 
         alpha += (visibility[e] ? dt : -dt) * 3e-9;

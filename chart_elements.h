@@ -6,7 +6,7 @@
 
 #include <cstddef>
 
-enum class chart_element_id : size_t
+enum class chart_element : size_t
 {
     star,
     triangles,

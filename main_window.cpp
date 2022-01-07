@@ -56,44 +56,44 @@ main_window::main_window(QWidget *parent)
     connect(ui->visibility_combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(visibility_changed()));
     connect(ui->star_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->animation->set_visibility(chart_element_id::star, checked);
+        ui->animation->set_visibility(chart_element::star, checked);
     });
     connect(ui->triangles_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->animation->set_visibility(chart_element_id::triangles, checked);
+        ui->animation->set_visibility(chart_element::triangles, checked);
     });
     connect(ui->squares_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->animation->set_visibility(chart_element_id::squares, checked);
+        ui->animation->set_visibility(chart_element::squares, checked);
     });
     connect(ui->circle_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->animation->set_visibility(chart_element_id::circle, checked);
+        ui->animation->set_visibility(chart_element::circle, checked);
     });
     connect(ui->dots_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
-        ui->animation->set_visibility(chart_element_id::dots, checked);
+        ui->animation->set_visibility(chart_element::dots, checked);
     });
 
     connect(ui->star_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->animation->set_color(chart_element_id::star, color);
+        ui->animation->set_color(chart_element::star, color);
     });
     connect(ui->triangles_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->animation->set_color(chart_element_id::triangles, color);
+        ui->animation->set_color(chart_element::triangles, color);
     });
     connect(ui->squares_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->animation->set_color(chart_element_id::squares, color);
+        ui->animation->set_color(chart_element::squares, color);
     });
     connect(ui->circle_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->animation->set_color(chart_element_id::circle, color);
+        ui->animation->set_color(chart_element::circle, color);
     });
     connect(ui->dots_color_button, &KColorButton::changed, this, [this] (QColor color)
     {
-        ui->animation->set_color(chart_element_id::dots, color);
+        ui->animation->set_color(chart_element::dots, color);
     });
 
     connect(ui->antialiasing_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
@@ -105,11 +105,11 @@ main_window::main_window(QWidget *parent)
     ui->animation->set_sharpness(ui->sharpness_edit->get_value());
 
     visibility_changed();
-    ui->animation->set_color(chart_element_id::star, ui->star_color_button->color());
-    ui->animation->set_color(chart_element_id::triangles, ui->triangles_color_button->color());
-    ui->animation->set_color(chart_element_id::squares, ui->squares_color_button->color());
-    ui->animation->set_color(chart_element_id::circle, ui->circle_color_button->color());
-    ui->animation->set_color(chart_element_id::dots, ui->dots_color_button->color());
+    ui->animation->set_color(chart_element::star, ui->star_color_button->color());
+    ui->animation->set_color(chart_element::triangles, ui->triangles_color_button->color());
+    ui->animation->set_color(chart_element::squares, ui->squares_color_button->color());
+    ui->animation->set_color(chart_element::circle, ui->circle_color_button->color());
+    ui->animation->set_color(chart_element::dots, ui->dots_color_button->color());
 
     ui->animation->set_antialiasing(ui->antialiasing_checkbox->isChecked());
 }

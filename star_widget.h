@@ -31,8 +31,8 @@ public:
     double get_actual_ratio() const;
 
     void set_visibility(visibility_flags visibility);
-    void set_visibility(chart_element_id element, bool visible);
-    void set_color(chart_element_id element, QColor color);
+    void set_visibility(chart_element element, bool visible);
+    void set_color(chart_element element, QColor color);
     void set_antialiasing(bool enabled);
 
     bool is_running() const;
@@ -55,7 +55,7 @@ private:
     void draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step);
 
     bool need_alpha_animation() const;
-    QColor get_color(chart_element_id e) const;
+    QColor get_color(chart_element e) const;
 
     void toggle_paused_state();
 
@@ -73,14 +73,14 @@ private:
 
     double sharpness = 0.9;
     visibility_flags visibility = {};
-    enum_map<QColor, chart_element_id> colors;
+    enum_map<QColor, chart_element> colors;
     bool enable_antialiasing = false;
 
     QElapsedTimer phi_timer;
     QElapsedTimer alpha_timer;
 
     double phi = 0.;
-    enum_map<double, chart_element_id> current_alpha = {};
+    enum_map<double, chart_element> current_alpha = {};
 
     QPainterPath star_path_cache;
 };
