@@ -380,7 +380,7 @@ void star_widget::validate_star_path()
     star_path_cache.moveTo(v[0]);
     for (size_t j = 0; j != actual_denom; ++j)
     {
-        double phi = (j * (double)actual_num * 2 * M_PI) / (actual_denom);
+        double phi = (j * (double)actual_num * 2 * M_PI) / actual_denom;
         QPointF row1 = QPointF(cos(phi), -sin(phi));
         QPointF row2 = QPointF(sin(phi), cos(phi));
 
