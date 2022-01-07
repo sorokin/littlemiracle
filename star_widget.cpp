@@ -5,6 +5,17 @@
 #include <cmath>
 #include "douglas_peucker.h"
 
+namespace
+{
+    constexpr QPointF ORIGIN = QPointF();
+    constexpr double STATIC_CIRCLE_R = 0.48;
+
+    QPointF from_polar(double phi, double radius)
+    {
+        return QPointF(cos(phi), sin(phi)) * radius;
+    }
+}
+
 star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
 {
@@ -41,12 +52,12 @@ void star_widget::set_sharpness(double sharpness)
     validate_star_path();
 }
 
-size_t star_widget::get_num() const
+size_t star_widget::get_desired_num() const
 {
     return desired_num;
 }
 
-size_t star_widget::get_denom() const
+size_t star_widget::get_desired_denom() const
 {
     return desired_denom;
 }
@@ -121,7 +132,7 @@ void star_widget::paintEvent(QPaintEvent* event)
             p.setPen(pen);
         }
 
-        p.drawEllipse(origin, big_r, big_r);
+        p.drawEllipse(ORIGIN, STATIC_CIRCLE_R, STATIC_CIRCLE_R);
     
         if (actual_num > actual_denom)
             return;
@@ -136,17 +147,17 @@ void star_widget::paintEvent(QPaintEvent* event)
                 p.setPen(pen);
             }
 
-            p.drawPath(star_path);
+            p.drawPath(star_path_cache);
         }
 
         update_phi();
 
         size_t co_num = actual_denom - actual_num;
-        double small_r = this->small_r();
+        double small_r = rotating_circle_r();
 
         std::vector<QPointF> points;
         for (size_t i = 0; i != actual_num * co_num; ++i)
-            points.push_back(poi(big_r, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
+            points.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
     
         if (current_alpha[chart_element_id::triangles] != 0.)
         {
@@ -180,7 +191,7 @@ void star_widget::paintEvent(QPaintEvent* event)
             pen.setColor(get_color(chart_element_id::circles));
             p.setPen(pen);
             
-            draw_circle(p, origin + from_polar(phi, big_r - small_r), small_r, inner_angle(big_r, small_r, phi));
+            draw_circle(p, ORIGIN + from_polar(phi, STATIC_CIRCLE_R - small_r), small_r, rotating_circle_angle(STATIC_CIRCLE_R, small_r, phi));
         }
     
         if (current_alpha[chart_element_id::dots] != 0.)
@@ -235,24 +246,14 @@ void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, s
     p.drawPath(path);
 }
 
-QPointF star_widget::from_polar(double alpha, double radius)
-{
-    return QPointF(cos(alpha), sin(alpha)) * radius;
-}
-
-double star_widget::outer_angle(double static_r, double rotating_r, double phi)
-{
-    return phi * (1. + static_r / rotating_r);
-}
-
-double star_widget::inner_angle(double static_r, double rotating_r, double phi)
+double star_widget::rotating_circle_angle(double static_r, double rotating_r, double phi)
 {
     return phi * (1. - static_r / rotating_r);
 }
 
-QPointF star_widget::poi(double static_r, double rotating_r, double alpha, double smoothness)
+QPointF star_widget::point_on_rotating_circle(double static_r, double rotating_r, double alpha, double smoothness)
 {
-    return origin + from_polar(alpha, static_r - rotating_r) + smoothness * from_polar(inner_angle(static_r, rotating_r, alpha), rotating_r);
+    return ORIGIN + from_polar(alpha, static_r - rotating_r) + smoothness * from_polar(rotating_circle_angle(static_r, rotating_r, alpha), rotating_r);
 }
 
 void star_widget::adjust_alpha(double& alpha, bool visible, double dt)
@@ -303,7 +304,7 @@ void star_widget::update_actual_num_denom()
 
 void star_widget::validate_star_path()
 {
-    double small_r = this->small_r();
+    double rotating_r = rotating_circle_r();
 
     constexpr size_t initial_subdivisions = 20;
     std::vector<QPointF> v;
@@ -311,13 +312,13 @@ void star_widget::validate_star_path()
     for (size_t i = 0; i <= initial_subdivisions; ++i)
     {
         double phi = (i * (double)actual_num * 2. * M_PI) / ((double)actual_denom * initial_subdivisions);
-        v.push_back(poi(big_r, small_r, phi, sharpness));
+        v.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, rotating_r, phi, sharpness));
     }
 
     v = simplify_polyline(v, 0.001);
 
-    star_path.clear();
-    star_path.moveTo(v[0]);
+    star_path_cache.clear();
+    star_path_cache.moveTo(v[0]);
     for (size_t j = 0; j != actual_denom; ++j)
     {
         double phi = (j * (double)actual_num * 2 * M_PI) / (actual_denom);
@@ -328,15 +329,15 @@ void star_widget::validate_star_path()
         {
             QPointF q = QPointF(QPointF::dotProduct(row1, v[i]),
                                 QPointF::dotProduct(row2, v[i]));
-            star_path.lineTo(q);
+            star_path_cache.lineTo(q);
         }
     }
-    star_path.closeSubpath();
+    star_path_cache.closeSubpath();
 }
 
-double star_widget::small_r() const
+double star_widget::rotating_circle_r() const
 {
-    return big_r * (double)actual_num / (double)actual_denom;
+    return STATIC_CIRCLE_R * (double)actual_num / (double)actual_denom;
 }
 
 void star_widget::update_phi()
