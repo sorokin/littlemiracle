@@ -28,6 +28,11 @@ public:
     void set_color(chart_element_id element, QColor color);
     void set_antialiasing(bool enabled);
 
+    bool is_running() const;
+
+signals:
+    void state_changed();
+
 private:
     void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;

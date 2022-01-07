@@ -104,6 +104,11 @@ void star_widget::set_antialiasing(bool enabled)
     update();
 }
 
+bool star_widget::is_running() const
+{
+    return phi_timer.isValid();
+}
+
 void star_widget::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton)
@@ -114,9 +119,11 @@ void star_widget::mousePressEvent(QMouseEvent* e)
         else
             phi_timer.start();
         update();
+
+        emit state_changed();
         return;
     }
-    
+
     QWidget::mousePressEvent(e);
 }
 

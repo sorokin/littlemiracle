@@ -1,6 +1,7 @@
 #include "auto_visibility_controller.h"
 #include "visibility_flags.h"
 #include "star_widget.h"
+#include <cassert>
 
 namespace
 {
@@ -29,6 +30,7 @@ auto_visibility_controller::auto_visibility_controller(QWidget* parent, star_wid
     , current_state(0)
 {
     connect(&timer, &QTimer::timeout, this, &auto_visibility_controller::timer_elapsed);
+    connect(controllable, &star_widget::state_changed, this, &auto_visibility_controller::state_changed);
     sync_state();
 }
 
@@ -38,11 +40,45 @@ void auto_visibility_controller::goto_star()
     sync_state();
 }
 
+void auto_visibility_controller::state_changed()
+{
+    if (controllable->is_running())
+    {
+        if (timer.isActive())
+            return;
+
+        timer.start(time_left_ms);
+        etimer.start();
+    }
+    else
+    {
+        if (!timer.isActive())
+            return;
+
+        assert(etimer.isValid());
+        qint64 e = etimer.elapsed();
+        assert(e >= 0);
+        if (e <= time_left_ms)
+            time_left_ms -= e;
+        else
+            time_left_ms = 0;
+
+        timer.stop();
+        etimer.invalidate();
+    }
+}
+
 void auto_visibility_controller::sync_state()
 {
     assert(current_state < std::size(states));
     controllable->set_visibility(states[current_state].visibility);
-    timer.start(states[current_state].duration_ms);
+    time_left_ms = states[current_state].duration_ms;
+
+    if (controllable->is_running())
+    {
+        timer.start(time_left_ms);
+        etimer.start();
+    }
 }
 
 void auto_visibility_controller::timer_elapsed()
