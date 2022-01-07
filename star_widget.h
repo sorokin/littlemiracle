@@ -35,9 +35,6 @@ private:
     void draw_circle(QPainter& p, QPointF center, double radius, double alpha);
     void draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step);
 
-    double rotating_circle_angle(double static_r, double rotating_r, double phi);
-    QPointF point_on_rotating_circle(double static_r, double rotating_r, double alpha, double smoothness);
-
     static void adjust_alpha(double& alpha, bool visible, double dt);
     bool need_alpha_animation() const;
     QColor get_color(chart_element_id e) const;

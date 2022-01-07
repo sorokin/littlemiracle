@@ -14,6 +14,16 @@ namespace
     {
         return QPointF(cos(phi), sin(phi)) * radius;
     }
+
+    double rotating_circle_angle(double static_r, double rotating_r, double phi)
+    {
+        return phi * (1. - static_r / rotating_r);
+    }
+
+    QPointF point_on_rotating_circle(double static_r, double rotating_r, double phi, double smoothness)
+    {
+        return ORIGIN + from_polar(phi, static_r - rotating_r) + smoothness * from_polar(rotating_circle_angle(static_r, rotating_r, phi), rotating_r);
+    }
 }
 
 star_widget::star_widget(QWidget* parent)
@@ -244,16 +254,6 @@ void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, s
         path.lineTo(vertices[i * step]);
     path.closeSubpath();
     p.drawPath(path);
-}
-
-double star_widget::rotating_circle_angle(double static_r, double rotating_r, double phi)
-{
-    return phi * (1. - static_r / rotating_r);
-}
-
-QPointF star_widget::point_on_rotating_circle(double static_r, double rotating_r, double alpha, double smoothness)
-{
-    return ORIGIN + from_polar(alpha, static_r - rotating_r) + smoothness * from_polar(rotating_circle_angle(static_r, rotating_r, alpha), rotating_r);
 }
 
 void star_widget::adjust_alpha(double& alpha, bool visible, double dt)
