@@ -3,6 +3,7 @@
 // LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
+#include <cassert>
 #include <cstddef>
 #include <type_traits>
 
@@ -13,12 +14,16 @@ struct enum_map
 
     T& operator[](E index)
     {
-        return elements[static_cast<size_t>(index)];
+        size_t index_n = static_cast<size_t>(index);
+        assert(index_n < size());
+        return elements[index_n];
     }
 
     T const& operator[](E index) const
     {
-        return elements[static_cast<size_t>(index)];
+        size_t index_n = static_cast<size_t>(index);
+        assert(index_n < size());
+        return elements[index_n];
     }
 
     constexpr size_t size() const
