@@ -95,6 +95,11 @@ size_t star_widget::get_actual_co_num() const
     return actual_denom - actual_num;
 }
 
+double star_widget::get_actual_ratio() const
+{
+    return (double)actual_num / (double)actual_denom;
+}
+
 void star_widget::set_visibility(visibility_flags visibility)
 {
     this->visibility = visibility;
@@ -370,7 +375,7 @@ void star_widget::validate_star_path()
     v.reserve(initial_subdivisions + 1);
     for (size_t i = 0; i <= initial_subdivisions; ++i)
     {
-        double phi = (i * (double)actual_num * 2. * M_PI) / ((double)actual_denom * initial_subdivisions);
+        double phi = ((double)i / (double)initial_subdivisions) * get_actual_ratio() * 2. * M_PI;
         v.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, rotating_r, phi, sharpness));
     }
 
@@ -380,7 +385,7 @@ void star_widget::validate_star_path()
     star_path_cache.moveTo(v[0]);
     for (size_t j = 0; j != actual_denom; ++j)
     {
-        double phi = (j * (double)actual_num * 2 * M_PI) / actual_denom;
+        double phi = (j * get_actual_ratio() * 2 * M_PI);
         QPointF row1 = QPointF(cos(phi), -sin(phi));
         QPointF row2 = QPointF(sin(phi), cos(phi));
 
@@ -396,7 +401,7 @@ void star_widget::validate_star_path()
 
 double star_widget::rotating_circle_r() const
 {
-    return STATIC_CIRCLE_R * (double)actual_num / (double)actual_denom;
+    return STATIC_CIRCLE_R * get_actual_ratio();
 }
 
 void star_widget::update_phi()
