@@ -177,20 +177,11 @@ void star_widget::paintEvent(QPaintEvent* event)
             p.setPen(pen);
         }
 
-        p.drawEllipse(ORIGIN, STATIC_CIRCLE_R, STATIC_CIRCLE_R);
+        draw_static_circle(p);
 
         update_alpha();
 
-        if (current_alpha[chart_element_id::star] != 0.)
-        {
-            {
-                QPen pen = p.pen();
-                pen.setColor(get_color(chart_element_id::star));
-                p.setPen(pen);
-            }
-
-            p.drawPath(star_path_cache);
-        }
+        draw_star(p);
 
         update_phi();
 
@@ -200,58 +191,11 @@ void star_widget::paintEvent(QPaintEvent* event)
         std::vector<QPointF> points;
         for (size_t i = 0; i != actual_num * co_num; ++i)
             points.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
-    
-        if (current_alpha[chart_element_id::triangles] != 0.)
-        {
-            {
-                QPen pen = p.pen();
-                pen.setColor(get_color(chart_element_id::triangles));
-                p.setPen(pen);
-            }
 
-            if (actual_num != 0)
-                for (size_t i = 0; i != co_num; ++i)
-                    draw_polygon(p, points.data() + i, actual_num, co_num);
-        }
-    
-        if (current_alpha[chart_element_id::squares] != 0.)
-        {
-            {
-                QPen pen = p.pen();
-                pen.setColor(get_color(chart_element_id::squares));
-                p.setPen(pen);
-            }
-
-            if (co_num != 0)
-                for (size_t i = 0; i != actual_num; ++i)
-                    draw_polygon(p, points.data() + i, co_num, actual_num);
-        }
-    
-        if (current_alpha[chart_element_id::circle] != 0.)
-        {
-            QPen pen = p.pen();
-            pen.setColor(get_color(chart_element_id::circle));
-            p.setPen(pen);
-            
-            draw_circle(p, ORIGIN + from_polar(phi, STATIC_CIRCLE_R - small_r), small_r, rotating_circle_angle(STATIC_CIRCLE_R, small_r, phi));
-        }
-    
-        if (current_alpha[chart_element_id::dots] != 0.)
-        {
-            {
-                QPen pen = p.pen();
-                pen.setStyle(Qt::NoPen);
-                p.setPen(pen);
-                
-                QBrush brush = p.brush();
-                brush.setColor(get_color(chart_element_id::dots));
-                brush.setStyle(Qt::SolidPattern);
-                p.setBrush(brush);
-            }
-    
-            for (size_t i = 0; i != points.size(); ++i)
-                p.drawEllipse(points[i], 0.01 * extra_scale, 0.01 * extra_scale);
-        }
+        draw_triangles(p, points);
+        draw_squares(p, points);
+        draw_rotating_circle(p);
+        draw_dots(p, points, extra_scale);
     }
 
     qint64 paint_time = paint_timer.nsecsElapsed();
@@ -267,15 +211,96 @@ void star_widget::paintEvent(QPaintEvent* event)
         update();
 }
 
-void star_widget::draw_circle(QPainter& p, QPointF center, double radius, double alpha)
+void star_widget::draw_static_circle(QPainter& p)
 {
-    p.drawEllipse(center, radius, radius);
+    p.drawEllipse(ORIGIN, STATIC_CIRCLE_R, STATIC_CIRCLE_R);
+}
+
+void star_widget::draw_star(QPainter& p)
+{
+    if (current_alpha[chart_element_id::star] == 0.)
+        return;
+
+    QPen pen = p.pen();
+    pen.setColor(get_color(chart_element_id::star));
+    p.setPen(pen);
+
+    p.drawPath(star_path_cache);
+}
+
+void star_widget::draw_triangles(QPainter& p, std::vector<QPointF> const& points)
+{
+    size_t co_num = get_actual_co_num();
+    assert(points.size() == actual_num * co_num);
+
+    if (current_alpha[chart_element_id::triangles] == 0.)
+        return;
+
+    QPen pen = p.pen();
+    pen.setColor(get_color(chart_element_id::triangles));
+    p.setPen(pen);
+
+    if (actual_num != 0)
+        for (size_t i = 0; i != co_num; ++i)
+            draw_polygon(p, points.data() + i, actual_num, co_num);
+}
+
+void star_widget::draw_squares(QPainter& p, const std::vector<QPointF> &points)
+{
+    size_t co_num = get_actual_co_num();
+    assert(points.size() == actual_num * co_num);
+
+    if (current_alpha[chart_element_id::squares] == 0.)
+        return;
+
+    QPen pen = p.pen();
+    pen.setColor(get_color(chart_element_id::squares));
+    p.setPen(pen);
+
+    if (co_num != 0)
+        for (size_t i = 0; i != actual_num; ++i)
+            draw_polygon(p, points.data() + i, co_num, actual_num);
+}
+
+void star_widget::draw_rotating_circle(QPainter& p)
+{
+    if (current_alpha[chart_element_id::circle] == 0.)
+        return;
+
+    QPen pen = p.pen();
+    pen.setColor(get_color(chart_element_id::circle));
+    p.setPen(pen);
+
+    double r = rotating_circle_r();
+    QPointF center = ORIGIN + from_polar(phi, STATIC_CIRCLE_R - r);
+
+    p.drawEllipse(center, r, r);
+
     // workaround: sometimes qt draw a horizontal line instead of point
     if (sharpness > 0.001)
     {
-        QPointF tip = center + sharpness * from_polar(alpha, radius);
+        double beta = rotating_circle_angle(STATIC_CIRCLE_R, r, phi);
+        QPointF tip = center + sharpness * from_polar(beta, r);
         p.drawLine(center, tip);
     }
+}
+
+void star_widget::draw_dots(QPainter& p, std::vector<QPointF> const& points, double extra_scale)
+{
+    if (current_alpha[chart_element_id::dots] == 0.)
+        return;
+
+    QPen pen = p.pen();
+    pen.setStyle(Qt::NoPen);
+    p.setPen(pen);
+
+    QBrush brush = p.brush();
+    brush.setColor(get_color(chart_element_id::dots));
+    brush.setStyle(Qt::SolidPattern);
+    p.setBrush(brush);
+
+    for (size_t i = 0; i != points.size(); ++i)
+        p.drawEllipse(points[i], 0.01 * extra_scale, 0.01 * extra_scale);
 }
 
 void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step)

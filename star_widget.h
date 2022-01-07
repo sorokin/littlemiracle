@@ -44,7 +44,13 @@ private:
     void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
 
-    void draw_circle(QPainter& p, QPointF center, double radius, double alpha);
+    void draw_static_circle(QPainter& p);
+    void draw_star(QPainter& p);
+    void draw_triangles(QPainter& p, std::vector<QPointF> const& points);
+    void draw_squares(QPainter& p, std::vector<QPointF> const& points);
+    void draw_rotating_circle(QPainter& p);
+    void draw_dots(QPainter& p, std::vector<QPointF> const& points, double extra_scale);
+
     void draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step);
 
     static void adjust_alpha(double& alpha, bool visible, double dt);
