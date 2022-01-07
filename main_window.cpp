@@ -50,6 +50,10 @@ main_window::main_window(QWidget *parent)
             avc->goto_star();
     });
     connect(ui->visibility_combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(visibility_changed()));
+    connect(ui->star_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
+    {
+        ui->animation->set_visibility(chart_element_id::star, checked);
+    });
     connect(ui->triangles_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
         ui->animation->set_visibility(chart_element_id::triangles, checked);
@@ -61,10 +65,6 @@ main_window::main_window(QWidget *parent)
     connect(ui->circle_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
         ui->animation->set_visibility(chart_element_id::circle, checked);
-    });
-    connect(ui->star_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
-    {
-        ui->animation->set_visibility(chart_element_id::star, checked);
     });
     connect(ui->dots_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
     {
@@ -101,10 +101,10 @@ main_window::main_window(QWidget *parent)
     ui->animation->set_sharpness(ui->sharpness_edit->get_value());
 
     visibility_changed();
+    ui->animation->set_color(chart_element_id::star, ui->star_color_button->color());
     ui->animation->set_color(chart_element_id::triangles, ui->triangles_color_button->color());
     ui->animation->set_color(chart_element_id::squares, ui->squares_color_button->color());
     ui->animation->set_color(chart_element_id::circle, ui->circle_color_button->color());
-    ui->animation->set_color(chart_element_id::star, ui->star_color_button->color());
     ui->animation->set_color(chart_element_id::dots, ui->dots_color_button->color());
 
     ui->animation->set_antialiasing(ui->antialiasing_checkbox->isChecked());
@@ -180,10 +180,10 @@ void main_window::update_checkboxes()
     bool custom = !avc;
     size_t co_num = ui->animation->get_actual_denom() - ui->animation->get_actual_num();
 
+    ui->star_checkbox->setEnabled(custom);
     ui->triangles_checkbox->setEnabled(custom && ui->animation->get_actual_num() != 1);
     ui->squares_checkbox->setEnabled(custom && co_num != 1);
     ui->circle_checkbox->setEnabled(custom);
-    ui->star_checkbox->setEnabled(custom);
     ui->dots_checkbox->setEnabled(custom);
 
     ui->triangles_color_label->setEnabled(ui->animation->get_actual_num() != 1);
