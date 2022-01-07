@@ -185,11 +185,11 @@ void star_widget::paintEvent(QPaintEvent* event)
         update_phi();
 
         size_t co_num = get_actual_co_num();
-        double small_r = rotating_circle_r();
+        double rotating_r = rotating_circle_r();
 
         std::vector<QPointF> points;
         for (size_t i = 0; i != actual_num * co_num; ++i)
-            points.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, small_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
+            points.push_back(point_on_rotating_circle(STATIC_CIRCLE_R, rotating_r, phi + ((double)i / (double)co_num) * 2 * M_PI, sharpness));
 
         draw_triangles(p, points);
         draw_squares(p, points);
@@ -270,16 +270,16 @@ void star_widget::draw_rotating_circle(QPainter& p)
     pen.setColor(get_color(chart_element_id::circle));
     p.setPen(pen);
 
-    double r = rotating_circle_r();
-    QPointF center = from_polar(phi, STATIC_CIRCLE_R - r);
+    double rotating_r = rotating_circle_r();
+    QPointF center = from_polar(phi, STATIC_CIRCLE_R - rotating_r);
 
-    p.drawEllipse(center, r, r);
+    p.drawEllipse(center, rotating_r, rotating_r);
 
     // workaround: sometimes qt draw a horizontal line instead of point
     if (sharpness > 0.001)
     {
-        double beta = rotating_circle_angle(STATIC_CIRCLE_R, r, phi);
-        QPointF tip = center + sharpness * from_polar(beta, r);
+        double beta = rotating_circle_angle(STATIC_CIRCLE_R, rotating_r, phi);
+        QPointF tip = center + sharpness * from_polar(beta, rotating_r);
         p.drawLine(center, tip);
     }
 }
