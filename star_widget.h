@@ -25,7 +25,10 @@ public:
     size_t get_actual_denom() const;
 
     void set_visibility(visibility_flags visibility);
+    void set_color(chart_element_id element, QColor color);
+    void set_antialiasing(bool enabled);
 
+private:
     void mousePressEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
 
@@ -41,9 +44,6 @@ public:
     bool need_alpha_animation() const;
     QColor get_color(chart_element_id e) const;
 
-    static constexpr QPointF origin = QPointF();
-
-private:
     void update_actual_num_denom();
     void validate_star_path();
     double small_r() const;
@@ -66,11 +66,10 @@ private:
 
     visibility_flags visibility = {};
     enum_map<double, chart_element_id> current_alpha = {};
-
-public:
     enum_map<QColor, chart_element_id> colors;
 
     bool enable_antialiasing = false;
 
+    static constexpr QPointF origin = QPointF();
     static constexpr double big_r = 0.48;
 };

@@ -71,6 +71,18 @@ void star_widget::set_visibility(visibility_flags visibility)
     update();
 }
 
+void star_widget::set_color(chart_element_id element, QColor color)
+{
+    colors[element] = color;
+    update();
+}
+
+void star_widget::set_antialiasing(bool enabled)
+{
+    enable_antialiasing = enabled;
+    update();
+}
+
 void star_widget::mousePressEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton)

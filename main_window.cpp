@@ -143,17 +143,16 @@ void main_window::checkbox_changed()
 
 void main_window::color_changed()
 {
-    ui->widget->colors[chart_element_id::triangles] = ui->kcolorbutton_2->color();
-    ui->widget->colors[chart_element_id::squares] = ui->kcolorbutton_3->color();
-    ui->widget->colors[chart_element_id::circles] = ui->kcolorbutton_4->color();
-    ui->widget->colors[chart_element_id::stars] = ui->kcolorbutton->color();
-    ui->widget->colors[chart_element_id::dots] = ui->kcolorbutton_5->color();
+    ui->widget->set_color(chart_element_id::triangles, ui->kcolorbutton_2->color());
+    ui->widget->set_color(chart_element_id::squares, ui->kcolorbutton_3->color());
+    ui->widget->set_color(chart_element_id::circles, ui->kcolorbutton_4->color());
+    ui->widget->set_color(chart_element_id::stars, ui->kcolorbutton->color());
+    ui->widget->set_color(chart_element_id::dots, ui->kcolorbutton_5->color());
 }
 
 void main_window::antialiasing_changed()
 {
-    ui->widget->enable_antialiasing = ui->checkBox_6->isChecked();
-    ui->widget->update();
+    ui->widget->set_antialiasing(ui->checkBox_6->isChecked());
 }
 
 void main_window::update_labels()
