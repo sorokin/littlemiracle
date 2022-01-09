@@ -70,12 +70,9 @@ private:
     void update_phi();
     void update_alpha();
 
-    void copy_image_to_clipboard();
-
 private:
     QAction* pause_resume_action;
     QAction* reset_to_default_action;
-    QAction* copy_image_action;
     QAction* show_debug_stats_action;
 
     size_t desired_num = 3;

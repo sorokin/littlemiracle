@@ -52,7 +52,6 @@ star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
     , pause_resume_action(new QAction(this))
     , reset_to_default_action(new QAction("Reset to Default", this))
-    , copy_image_action(new QAction("Copy Image", this))
     , show_debug_stats_action(new QAction(this))
 {
     pause_resume_action->setShortcut(QKeySequence("Space"));
@@ -65,12 +64,6 @@ star_widget::star_widget(QWidget* parent)
     connect(reset_to_default_action, &QAction::triggered,
             this, [this] (bool) { emit reset_to_default_triggered(); });
     addAction(reset_to_default_action);
-
-    copy_image_action->setIcon(QIcon(":/icons/copy.svg"));
-    copy_image_action->setShortcut(QKeySequence("Ctrl+C"));
-    connect(copy_image_action, &QAction::triggered,
-            this, [this](bool) { copy_image_to_clipboard(); });
-    addAction(copy_image_action);
 
     show_debug_stats_action->setShortcut(QKeySequence("F11"));
     connect(show_debug_stats_action, &QAction::triggered,
@@ -203,8 +196,6 @@ void star_widget::contextMenuEvent(QContextMenuEvent* e)
 
     menu->addAction(pause_resume_action);
     menu->addAction(reset_to_default_action);
-    menu->addSeparator();
-    menu->addAction(copy_image_action);
     menu->exec(e->globalPos());
 }
 
@@ -522,15 +513,4 @@ void star_widget::update_alpha()
 
     if (!need_alpha_animation())
         alpha_timer.invalidate();
-}
-
-void star_widget::copy_image_to_clipboard()
-{
-    int size = std::min(width(), height());
-    QImage image(size, size, QImage::Format_RGB888);
-    image.fill(palette().color(backgroundRole()));
-    QPainter p(&image);
-    p.setRenderHint(QPainter::Antialiasing, true);
-    draw_scene(p, size, size);
-    QApplication::clipboard()->setImage(image);
 }
