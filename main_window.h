@@ -27,6 +27,7 @@ public slots:
 private:
     void update_labels();
     void update_checkboxes();
+    void update_reset_to_default_action();
 
 private:
     Ui::main_window *ui;

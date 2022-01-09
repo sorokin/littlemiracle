@@ -157,6 +157,11 @@ void star_widget::set_antialiasing(bool enabled)
     update();
 }
 
+void star_widget::enable_reset_to_default_action(bool enabled)
+{
+    reset_to_default_action->setEnabled(enabled);
+}
+
 bool star_widget::is_running() const
 {
     return phi_timer.isValid();

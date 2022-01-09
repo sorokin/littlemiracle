@@ -35,6 +35,8 @@ public:
     void set_color(chart_element element, QColor color);
     void set_antialiasing(bool enabled);
 
+    void enable_reset_to_default_action(bool enabled);
+
     bool is_running() const;
 
 signals:

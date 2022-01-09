@@ -52,6 +52,7 @@ main_window::main_window(QWidget *parent)
         ui->animation->set_sharpness(value);
         if (avc)
             avc->goto_star();
+        update_reset_to_default_action();
     });
     connect(ui->visibility_combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(visibility_changed()));
     connect(ui->star_checkbox, &QCheckBox::toggled, this, [this] (bool checked)
@@ -120,6 +121,7 @@ main_window::main_window(QWidget *parent)
     ui->animation->set_color(chart_element::dots, ui->dots_color_button->color());
 
     ui->animation->set_antialiasing(ui->antialiasing_checkbox->isChecked());
+    update_reset_to_default_action();
 }
 
 main_window::~main_window()
@@ -134,6 +136,7 @@ void main_window::numerator_changed()
         avc->goto_star();
     update_labels();
     update_checkboxes();
+    update_reset_to_default_action();
 }
 
 void main_window::denominator_changed()
@@ -145,6 +148,7 @@ void main_window::denominator_changed()
         avc->goto_star();
     update_labels();
     update_checkboxes();
+    update_reset_to_default_action();
 }
 
 void main_window::visibility_changed()
@@ -174,6 +178,7 @@ void main_window::visibility_changed()
         assert(false);
         break;
     }
+    update_reset_to_default_action();
 }
 
 void main_window::update_labels()
@@ -200,4 +205,14 @@ void main_window::update_checkboxes()
 
     ui->triangles_color_label->setEnabled(ui->animation->get_actual_num() != 1);
     ui->squares_color_label->setEnabled(co_num != 1);
+}
+
+void main_window::update_reset_to_default_action()
+{
+    bool enabled = ui->numerator_spinbox->value()   != 3
+                 | ui->denominator_spinbox->value() != 7
+                 | ui->sharpness_edit->text()       != "0.93"
+                 | ui->visibility_combobox->currentIndex() != 0;
+
+    ui->animation->enable_reset_to_default_action(enabled);
 }
