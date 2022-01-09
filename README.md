@@ -14,4 +14,12 @@ This is an animation program inspired by Mathologer's [3-4-7 miracle video](http
 
 # Try online
 
-Online [demo](https://sorokin.github.io/littlemiracle/littlemiracle.html).
+[Online demo](https://sorokin.github.io/littlemiracle/littlemiracle.html) is available. The web version has some limitations:
+
+* Rendering is approximatelly 4 times slower than on desktop. This might be problematic when anti-aliasing is enabled. Also the problem is exacerbated by the fact that program doesn't use `requestAnimationFrame`.
+* Color selection requires showing the color selection dialog and the web version doesn't support dialogs.
+* Copy image to clipboard menu item is not available.
+* Tooltips are disabled.
+* The focus doesn't return to the control after context menu is shown.
+
+For best experience please use desktop version.
