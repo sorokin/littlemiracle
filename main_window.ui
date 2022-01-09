@@ -49,9 +49,6 @@
        </item>
        <item>
         <widget class="QSpinBox" name="numerator_spinbox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Numerator and Denominator determine the relative size of the rotating circle.&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;rotating&lt;/span&gt; = R&lt;span style=&quot; vertical-align:sub;&quot;&gt;static&lt;/span&gt; ⋅ N/D&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Where&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;rotating&lt;/span&gt; — radius of the rotating circle&lt;/li&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;static&lt;/span&gt; — radius of the static circle&lt;/li&gt;&lt;li&gt;N — numerator&lt;/li&gt;&lt;li&gt;D — denominator&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
          <property name="minimum">
           <number>1</number>
          </property>
@@ -69,9 +66,6 @@
        </item>
        <item>
         <widget class="QSpinBox" name="denominator_spinbox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Numerator and Denominator determine the relative size of the rotating circle.&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;rotating&lt;/span&gt; = R&lt;span style=&quot; vertical-align:sub;&quot;&gt;static&lt;/span&gt; ⋅ N/D&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Where&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;rotating&lt;/span&gt; — radius of the rotating circle&lt;/li&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;static&lt;/span&gt; — radius of the static circle&lt;/li&gt;&lt;li&gt;N — numerator&lt;/li&gt;&lt;li&gt;D — denominator&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
          <property name="minimum">
           <number>2</number>
          </property>
@@ -92,9 +86,6 @@
        </item>
        <item>
         <widget class="sharpness_line_edit" name="sharpness_edit">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sharpness determines how sharp the corners of the star are. Value 1 means maximal sharpness, the lower the value the more round the star is.&lt;/p&gt;&lt;p&gt;Internally sharpness determines the ratio between the radius of circle on which the dot that traces the star is located and the radius of the rotating circle:&lt;/p&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;dot&lt;/span&gt; = S ⋅ R&lt;span style=&quot;vertical-align:sub;&quot;&gt;rotating&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Where&lt;/p&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt;R&lt;span style=&quot; vertical-align:sub;&quot;&gt;dot&lt;/span&gt; — the radius of circle on which the dot that traces the star is located&lt;/li&gt;&lt;li&gt;S — sharpness&lt;/li&gt;&lt;li&gt;R&lt;span style=&quot;vertical-align:sub;&quot;&gt;rotating&lt;/span&gt; — the radius of the rotating circle&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
          <property name="text">
           <string>0.93</string>
          </property>
@@ -109,9 +100,6 @@
        </item>
        <item>
         <widget class="QComboBox" name="visibility_combobox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visibility determines what elements of the animation are visible.&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt;Auto — different elements are shown and hidden automatically over time&lt;/li&gt;&lt;li&gt;Custom — what elements are shown is manually selectable by user&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
          <item>
           <property name="text">
            <string>Auto</string>
@@ -210,9 +198,6 @@
        </item>
        <item>
         <widget class="QCheckBox" name="antialiasing_checkbox">
-         <property name="toolTip">
-          <string>Enabling anti-aliasing makes edges of the lines smooth at the expense of longer rendering time.</string>
-         </property>
          <property name="text">
           <string>Anti-aliasing</string>
          </property>
