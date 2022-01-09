@@ -639,8 +639,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 10037,
-  'maximum': 10037 + 0,
+  'initial': 10039,
+  'maximum': 10039 + 0,
   'element': 'anyfunc'
 });
 
@@ -1241,11 +1241,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 9464944,
+    STACK_BASE = 9465136,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 4222064,
-    DYNAMIC_BASE = 9464944,
-    DYNAMICTOP_PTR = 4221888;
+    STACK_MAX = 4222256,
+    DYNAMIC_BASE = 9465136,
+    DYNAMICTOP_PTR = 4222080;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1771,7 +1771,7 @@ var ASM_CONSTS = {
 
 
 
-// STATICTOP = STATIC_BASE + 4221040;
+// STATICTOP = STATIC_BASE + 4221232;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -7068,7 +7068,7 @@ var ASM_CONSTS = {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 4221888;
+      return 4222080;
     }
 
   
@@ -11401,10 +11401,10 @@ var ASM_CONSTS = {
     }
 
   
-  var ___tm_current=4221904;
+  var ___tm_current=4222096;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 4221952, 4), 4221952);
+  var ___tm_timezone=(stringToUTF8("GMT", 4222144, 4), 4222144);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.
