@@ -31,6 +31,11 @@ namespace
     {
         return from_polar(phi, static_r - rotating_r) + smoothness * from_polar(rotating_circle_angle(static_r, rotating_r, phi), rotating_r);
     }
+
+    double star_length(size_t num, size_t denom)
+    {
+        return 8. * std::lcm(num, denom - num) / denom;
+    }
 }
 
 star_widget::star_widget(QWidget* parent)
@@ -453,7 +458,7 @@ void star_widget::update_phi()
     phi_timer.start();
 
     assert(phi >= 0.);
-    phi += (5e-9 / actual_denom) * dt;
+    phi += 1.7e-9 * actual_num / star_length(actual_num, actual_denom) * dt;
     if (phi >= actual_num * 2 * M_PI)
         phi -= actual_num * 2 * M_PI;
 }
