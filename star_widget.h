@@ -39,6 +39,7 @@ public:
 
 signals:
     void paused_state_changed();
+    void reset_to_default_triggered();
 
 private:
     void contextMenuEvent(QContextMenuEvent*) override;
@@ -71,6 +72,7 @@ private:
 
 private:
     QAction* pause_resume_action;
+    QAction* reset_to_default_action;
     QAction* copy_image_action;
 
     size_t desired_num = 3;

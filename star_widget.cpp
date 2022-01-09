@@ -36,12 +36,19 @@ namespace
 star_widget::star_widget(QWidget* parent)
     : QWidget(parent)
     , pause_resume_action(new QAction(this))
+    , reset_to_default_action(new QAction("Reset to Default", this))
     , copy_image_action(new QAction("Copy Image", this))
 {
     pause_resume_action->setShortcut(QKeySequence("Space"));
     connect(pause_resume_action, &QAction::triggered,
             this, [this](bool) { toggle_paused_state(); });
     addAction(pause_resume_action);
+
+    reset_to_default_action->setIcon(style()->standardIcon(QStyle::SP_RestoreDefaultsButton));
+    reset_to_default_action->setShortcut(QKeySequence("Ctrl+R"));
+    connect(reset_to_default_action, &QAction::triggered,
+            this, [this] (bool) { emit reset_to_default_triggered(); });
+    addAction(reset_to_default_action);
 
     copy_image_action->setIcon(QIcon(":/icons/copy.svg"));
     copy_image_action->setShortcut(QKeySequence("Ctrl+C"));
@@ -165,6 +172,7 @@ void star_widget::contextMenuEvent(QContextMenuEvent* e)
     auto menu = std::make_unique<QMenu>(this);
 
     menu->addAction(pause_resume_action);
+    menu->addAction(reset_to_default_action);
     menu->addSeparator();
     menu->addAction(copy_image_action);
     menu->exec(e->globalPos());

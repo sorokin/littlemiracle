@@ -101,6 +101,14 @@ main_window::main_window(QWidget *parent)
         ui->animation->set_antialiasing(checked);
     });
 
+    connect(ui->animation, &star_widget::reset_to_default_triggered, this, [this]()
+    {
+        ui->denominator_spinbox->setValue(7);
+        ui->numerator_spinbox->setValue(3);
+        ui->sharpness_edit->setText("0.93");
+        ui->visibility_combobox->setCurrentIndex(0);
+    });
+
     denominator_changed();
     ui->animation->set_sharpness(ui->sharpness_edit->get_value());
 
