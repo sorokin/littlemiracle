@@ -4,7 +4,15 @@ This is an animation program inspired by Mathologer's [3-4-7 miracle video](http
 
 ![alt text](screenshot.png)
 
-# Compilation instructions
+# Installation
+
+## Windows
+
+[Little Miracle 1.0](https://github.com/sorokin/littlemiracle/releases/download/1.0/littlemiracle-1.0-win10-x64.zip) is available for downloading. It requires Windows 10 (1809 or later; 64-bit).
+
+## Linux
+
+One can compile the program by running
 
     $ git clone https://github.com/sorokin/littlemiracle.git
     $ cd littlemiracle
