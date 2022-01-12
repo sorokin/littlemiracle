@@ -425,8 +425,12 @@ void star_widget::update_actual_num_denom()
 
     assert(actual_num < actual_denom);
 
-    triangles_permutator = multiplicate_inverse(actual_denom, actual_num);
-    squares_permutator   = multiplicate_inverse(actual_denom, get_actual_co_num());
+    triangles_permutator =
+        actual_num == 1 ? 1
+                        : multiplicate_inverse(actual_denom, actual_num);
+    squares_permutator =
+        get_actual_co_num() == 1 ? 1
+                                 : multiplicate_inverse(actual_denom, get_actual_co_num());
 }
 
 void star_widget::validate_star_path()
