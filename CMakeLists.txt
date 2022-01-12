@@ -52,7 +52,7 @@ else()
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(littlemiracle
+        add_executable(littlemiracle WIN32
             ${PROJECT_SOURCES}
         )
     endif()
