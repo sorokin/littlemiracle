@@ -57,7 +57,7 @@ private:
     void draw_rotating_circle(QPainter& p);
     void draw_dots(QPainter& p, std::vector<QPointF> const& points, double extra_scale);
 
-    void draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step);
+    void draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t permutator, size_t step);
 
     bool need_alpha_animation() const;
     QColor get_color(chart_element e) const;
@@ -79,8 +79,11 @@ private:
 
     size_t desired_num = 3;
     size_t desired_denom = 7;
-    size_t actual_num = 3;
-    size_t actual_denom = 7;
+    size_t actual_num;
+    size_t actual_denom;
+
+    size_t triangles_permutator;
+    size_t squares_permutator;
 
     double sharpness = 0.9;
     visibility_flags visibility = {};

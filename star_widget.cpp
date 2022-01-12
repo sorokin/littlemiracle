@@ -36,6 +36,16 @@ namespace
     {
         return 8. * std::lcm(num, denom - num) / denom;
     }
+
+    size_t multiplicate_inverse(size_t a, size_t n)
+    {
+        for (size_t b = 1; b < n; ++b)
+            if ((a * b) % n == 1)
+                return b;
+
+        assert(false);
+        return 1;
+    }
 }
 
 star_widget::star_widget(QWidget* parent)
@@ -64,8 +74,8 @@ star_widget::star_widget(QWidget* parent)
     setFocusPolicy(Qt::StrongFocus);
     phi_timer.start();
     alpha_timer.start();
+    update_actual_num_denom();
     validate_star_path();
-
 }
 
 void star_widget::set_desired_num(size_t num)
@@ -291,7 +301,7 @@ void star_widget::draw_triangles(QPainter& p, std::vector<QPointF> const& points
 
     if (actual_num != 0)
         for (size_t i = 0; i != co_num; ++i)
-            draw_polygon(p, points.data() + i, actual_num, co_num);
+            draw_polygon(p, points.data() + i, actual_num, triangles_permutator, co_num);
 }
 
 void star_widget::draw_squares(QPainter& p, const std::vector<QPointF> &points)
@@ -308,7 +318,7 @@ void star_widget::draw_squares(QPainter& p, const std::vector<QPointF> &points)
 
     if (co_num != 0)
         for (size_t i = 0; i != actual_num; ++i)
-            draw_polygon(p, points.data() + i, co_num, actual_num);
+            draw_polygon(p, points.data() + i, co_num, squares_permutator, actual_num);
 }
 
 void star_widget::draw_rotating_circle(QPainter& p)
@@ -352,12 +362,17 @@ void star_widget::draw_dots(QPainter& p, std::vector<QPointF> const& points, dou
         p.drawEllipse(points[i], 0.01 * extra_scale, 0.01 * extra_scale);
 }
 
-void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t step)
+void star_widget::draw_polygon(QPainter& p, QPointF const* vertices, size_t n, size_t permutator, size_t step)
 {
+    auto index = [=](size_t i)
+    {
+        return (i * permutator) % n * step;
+    };
+
     QPainterPath path;
-    path.moveTo(vertices[0]);
+    path.moveTo(vertices[index(0)]);
     for (size_t i = 1; i != n; ++i)
-        path.lineTo(vertices[i * step]);
+        path.lineTo(vertices[index(i)]);
     path.closeSubpath();
     p.drawPath(path);
 }
@@ -409,6 +424,9 @@ void star_widget::update_actual_num_denom()
     actual_denom = desired_denom / d;
 
     assert(actual_num < actual_denom);
+
+    triangles_permutator = multiplicate_inverse(actual_denom, actual_num);
+    squares_permutator   = multiplicate_inverse(actual_denom, get_actual_co_num());
 }
 
 void star_widget::validate_star_path()
