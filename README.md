@@ -8,7 +8,7 @@ This is an animation program inspired by Mathologer's [3-4-7 miracle video](http
 
 ## Windows
 
-[Little Miracle 1.0](https://github.com/sorokin/littlemiracle/releases/download/1.0/littlemiracle-1.0-win10-x64.zip) is available for downloading. It requires Windows 10 (1809 or later; 64-bit).
+[Little Miracle 1.1](https://github.com/sorokin/littlemiracle/releases/download/1.1/littlemiracle-1.1-win10-x64.zip) is available for downloading. It requires Windows 10 (1809 or later; 64-bit).
 
 ## Linux
 
