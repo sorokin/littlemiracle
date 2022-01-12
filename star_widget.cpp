@@ -84,6 +84,7 @@ void star_widget::set_desired_num(size_t num)
     this->desired_num = num;
     update_actual_num_denom();
     validate_star_path();
+    update();
 }
 
 void star_widget::set_desired_denom(size_t denom)
@@ -92,6 +93,7 @@ void star_widget::set_desired_denom(size_t denom)
     this->desired_denom = denom;
     update_actual_num_denom();
     validate_star_path();
+    update();
 }
 
 void star_widget::set_desired_num_denom(size_t num, size_t denom)
@@ -101,12 +103,14 @@ void star_widget::set_desired_num_denom(size_t num, size_t denom)
     this->desired_denom = denom;
     update_actual_num_denom();
     validate_star_path();
+    update();
 }
 
 void star_widget::set_sharpness(double sharpness)
 {
     this->sharpness = sharpness;
     validate_star_path();
+    update();
 }
 
 size_t star_widget::get_desired_num() const
