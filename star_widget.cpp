@@ -53,6 +53,7 @@ star_widget::star_widget(QWidget* parent)
     , pause_resume_action(new QAction(this))
     , reset_to_default_action(new QAction("Reset to Default", this))
     , copy_image_action(new QAction("Copy Image", this))
+    , show_debug_stats_action(new QAction(this))
 {
     pause_resume_action->setShortcut(QKeySequence("Space"));
     connect(pause_resume_action, &QAction::triggered,
@@ -70,6 +71,11 @@ star_widget::star_widget(QWidget* parent)
     connect(copy_image_action, &QAction::triggered,
             this, [this](bool) { copy_image_to_clipboard(); });
     addAction(copy_image_action);
+
+    show_debug_stats_action->setShortcut(QKeySequence("F11"));
+    connect(show_debug_stats_action, &QAction::triggered,
+            this, [this](bool) { show_debug_stats = !show_debug_stats; update(); });
+    addAction(show_debug_stats_action);
 
     setFocusPolicy(Qt::StrongFocus);
     phi_timer.start();
@@ -217,7 +223,9 @@ void star_widget::mousePressEvent(QMouseEvent* e)
 void star_widget::paintEvent(QPaintEvent* event)
 {
     QElapsedTimer paint_timer;
-    paint_timer.start();
+    if (show_debug_stats)
+        paint_timer.start();
+
     {
         QPainter p(this);
         if (enable_antialiasing)
@@ -225,13 +233,16 @@ void star_widget::paintEvent(QPaintEvent* event)
         draw_scene(p, width(), height());
     }
 
-    qint64 paint_time = paint_timer.nsecsElapsed();
+    if (!phi_timer.isValid())
     {
         QPainter p(this);
-        if (!phi_timer.isValid())
-            p.drawText(this->contentsRect(), Qt::AlignCenter, "Paused. Click to resume.");
-        else
-            p.drawText(this->contentsRect(), Qt::AlignBottom | Qt::AlignLeft, QString("Render Time: %1 ms").arg(paint_time / 1'000'000., 0, 'f', 2));
+        p.drawText(this->contentsRect(), Qt::AlignCenter, "Paused. Click to resume.");
+    }
+    else if (show_debug_stats)
+    {
+        qint64 paint_time = paint_timer.nsecsElapsed();
+        QPainter p(this);
+        p.drawText(this->contentsRect(), Qt::AlignBottom | Qt::AlignLeft, QString("Render Time: %1 ms").arg(paint_time / 1'000'000., 0, 'f', 2));
     }
 
     if (phi_timer.isValid() || alpha_timer.isValid())

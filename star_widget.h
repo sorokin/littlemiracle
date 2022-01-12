@@ -76,6 +76,7 @@ private:
     QAction* pause_resume_action;
     QAction* reset_to_default_action;
     QAction* copy_image_action;
+    QAction* show_debug_stats_action;
 
     size_t desired_num = 3;
     size_t desired_denom = 7;
@@ -89,6 +90,7 @@ private:
     visibility_flags visibility = {};
     enum_map<QColor, chart_element> colors;
     bool enable_antialiasing = false;
+    bool show_debug_stats = false;
 
     QElapsedTimer phi_timer;
     QElapsedTimer alpha_timer;
